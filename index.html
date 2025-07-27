@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, orientation=landscape">
     <title>大電視 - Hong Kong Cantonese Party Game</title>
     
     <!-- PWA Meta Tags -->
@@ -586,12 +586,24 @@
     <!-- Game Screen -->
     <div class="screen" id="gameScreen">
         <div class="game-screen">
+            <div class="orientation-message">
+                <h2>🔄 請轉為橫向模式</h2>
+                <div class="rotate-icon">📱</div>
+                <p>Please rotate your device to landscape mode</p>
+                <p>遊戲需要橫向模式以獲得最佳體驗</p>
+            </div>
+            
             <div class="game-header">
                 <button class="exit-btn" onclick="exitGame()">✕ 退出</button>
                 <div class="timer" id="gameTimer">60</div>
                 <div class="score">
                     <span id="correctCount">0</span> 正確 | <span id="skipCount">0</span> 跳過
                 </div>
+            </div>
+
+            <div class="swipe-instructions">
+                <div class="swipe-hint-side">⬇️ 向下滑動表示正確</div>
+                <div class="swipe-hint-side">⬆️ 向上滑動表示跳過</div>
             </div>
 
             <div class="game-card" id="gameCard">
@@ -1193,16 +1205,39 @@
             });
         }
 
-        // Swipe handling
+        // Swipe handling - optimized for landscape
         function setupSwipeHandlers() {
             const gameCard = document.getElementById('gameCard');
             let startY = 0;
             let startTime = 0;
+            let isDragging = false;
             
             gameCard.addEventListener('touchstart', (e) => {
                 startY = e.touches[0].clientY;
                 startTime = Date.now();
+                isDragging = false;
             }, { passive: true });
+            
+            gameCard.addEventListener('touchmove', (e) => {
+                e.preventDefault(); // Prevent scrolling
+                isDragging = true;
+                
+                const currentY = e.touches[0].clientY;
+                const deltaY = startY - currentY;
+                
+                // Visual feedback during swipe
+                if (Math.abs(deltaY) > 20) {
+                    if (deltaY > 0) {
+                        // Swiping up - Skip (red tint)
+                        gameCard.style.background = `linear-gradient(135deg, #2c3e50 0%, rgba(231, 76, 60, 0.3) 100%)`;
+                    } else {
+                        // Swiping down - Correct (green tint)
+                        gameCard.style.background = `linear-gradient(135deg, #2c3e50 0%, rgba(39, 174, 96, 0.3) 100%)`;
+                    }
+                } else {
+                    gameCard.style.background = '#2c3e50';
+                }
+            }, { passive: false });
             
             gameCard.addEventListener('touchend', (e) => {
                 const endY = e.changedTouches[0].clientY;
@@ -1210,8 +1245,11 @@
                 const deltaY = startY - endY;
                 const deltaTime = endTime - startTime;
                 
+                // Reset background
+                gameCard.style.background = '#2c3e50';
+                
                 // Only consider swipes that are fast enough and long enough
-                if (Math.abs(deltaY) > 50 && deltaTime < 500) {
+                if (isDragging && Math.abs(deltaY) > 80 && deltaTime < 800) {
                     if (deltaY > 0) {
                         // Swipe up - Skip
                         skipWord();
@@ -1220,12 +1258,9 @@
                         correctWord();
                     }
                 }
+                
+                isDragging = false;
             }, { passive: true });
-            
-            // Prevent scrolling during game
-            gameCard.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-            }, { passive: false });
         }
 
         function correctWord() {
