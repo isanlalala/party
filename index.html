@@ -92,7 +92,9 @@
             width: 100%;
             max-width: 400px;
             max-height: 100vh;
-            overflow-y: auto;
+            /*overflow-y: auto;*/
+			display: flex;
+			flex-direction: column;
         }
 
         .setup-header {
@@ -103,9 +105,14 @@
         .setup-section {
             background: rgba(255,255,255,0.1);
             border-radius: 15px;
-            padding: 20px;
+            /* padding: 20px;*/
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
+			
+			flex-grow: 1;        /* take remaining vertical space */
+			overflow-y: auto;    /* scroll if content overflows */
+			padding: 10px;       /* optional padding */
+			box-sizing: border-box;
         }
 
         .setup-section h3 {
