@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta charset="UTF-8">
@@ -808,6 +808,36 @@
             background: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.5);
         }
+		
+	/* Landscape adjustments */
+		@media (orientation: landscape) {
+		.setup-screen {
+			max-width: 90vw;       /* allow wider container */
+			height: 100dvh;        /* fill screen height */
+			display: grid;         /* grid for cleaner layout */
+			grid-template-columns: 1fr 1fr; /* 2 equal columns */
+			gap: 20px;
+			align-items: start;    /* top-align sections */
+			justify-items: center; /* center each column's content */
+			padding: 20px;
+			box-sizing: border-box;
+		}
+
+		.setup-section {
+			width: 100%;
+		}
+
+		.setup-header {
+			grid-column: 1 / -1; /* header spans both columns */
+			text-align: center;
+			margin-bottom: 10px;
+		}
+
+		button.btn {
+			grid-column: 1 / -1; /* start game button spans both columns */
+		}
+	}		
+	
     </style>
 </head>
 <body>
@@ -1017,6 +1047,12 @@
     </div>
 
     <script>
+		// Force layout to reflow when device orientation changes
+		window.addEventListener("orientationchange", () => {
+			// Trigger a reflow
+			document.body.offsetHeight;
+		});
+	
         // Default word packs
         const defaultCategories = {
 			"世界各地": [
