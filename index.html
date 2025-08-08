@@ -205,9 +205,15 @@
         }
 
         .timer-btn.selected {
-            background: rgba(255,255,255,0.3);
-            border-color: rgba(255,255,255,0.8);
-        }
+		  background-color: #3498db;  /* example highlight */
+		  color: white;
+		}
+		
+		.custom-timer-input.selected-custom {
+		  border: 2px solid #3498db;
+		  border-radius: 4px;
+		  padding: 4px;
+		}
 
         .custom-timer-input {
             display: flex;
@@ -871,9 +877,9 @@
             <div class="setup-section">
                 <h3>回合時間 Round Duration</h3>
                 <div class="timer-options">
-                    <div class="timer-btn selected" onclick="selectTimer(60)">120秒</div>
-                    <div class="timer-btn" onclick="selectTimer(90)">180秒</div>
-                    <div class="timer-btn" onclick="selectTimer(120)">300秒</div>
+                    <div class="timer-btn selected" onclick="selectTimer(120, event)">120秒</div>
+                    <div class="timer-btn" onclick="selectTimer(180, event)">180秒</div>
+                    <div class="timer-btn" onclick="selectTimer(300, event)">300秒</div>
                 </div>
                 <div class="custom-timer-input">
 					<span>或自定義:</span>
@@ -2099,28 +2105,34 @@
 
         // Timer selection
         function selectTimer(seconds, event) {
-		// If called from custom input, get value from the input
-		if (seconds === 'custom') {
-			const customValue = parseInt(document.getElementById('customTimer').value, 10);
-			if (!isNaN(customValue) && customValue > 0) {
-				gameState.duration = customValue;
+			if (seconds === 'custom') {
+				const customInput = document.getElementById('customTimer');
+				const customValue = parseInt(customInput.value, 10);
+				if (!isNaN(customValue) && customValue > 0) {
+					gameState.duration = customValue;
+				} else {
+					alert("請輸入有效的秒數");
+					return;
+				}
 			} else {
-				alert("請輸入有效的秒數");
-				return;
+				gameState.duration = seconds;
 			}
-		} else {
-			gameState.duration = seconds;
-		}
 
-		// Clear all button highlights
-		document.querySelectorAll('.timer-btn').forEach(btn => btn.classList.remove('selected'));
+			// Remove all preset button highlights
+			document.querySelectorAll('.timer-btn').forEach(btn => btn.classList.remove('selected'));
+			// Remove highlight from custom input container
+			document.querySelector('.custom-timer-input').classList.remove('selected-custom');
 
-		// Highlight the clicked button if from preset
-		if (event && event.target && event.target.classList.contains('timer-btn')) {
-			event.target.classList.add('selected');
-			document.getElementById('customTimer').value = ''; // Clear custom input if preset selected
+			if (seconds === 'custom') {
+				// Highlight custom input container
+				document.querySelector('.custom-timer-input').classList.add('selected-custom');
+			} else if (event && event.target && event.target.classList.contains('timer-btn')) {
+				// Highlight clicked preset button
+				event.target.classList.add('selected');
+				// Clear custom input value
+				document.getElementById('customTimer').value = '';
+			}
 		}
-	}
 
         // Category management
         function updateCategorySelect() {
