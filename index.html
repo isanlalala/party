@@ -871,14 +871,13 @@
             <div class="setup-section">
                 <h3>回合時間 Round Duration</h3>
                 <div class="timer-options">
-                    <div class="timer-btn" onclick="selectTimer(30)">30秒</div>
-                    <div class="timer-btn selected" onclick="selectTimer(60)">60秒</div>
-                    <div class="timer-btn" onclick="selectTimer(90)">90秒</div>
-                    <div class="timer-btn" onclick="selectTimer(120)">120秒</div>
+                    <div class="timer-btn selected" onclick="selectTimer(60)">120秒</div>
+                    <div class="timer-btn" onclick="selectTimer(90)">180秒</div>
+                    <div class="timer-btn" onclick="selectTimer(120)">300秒</div>
                 </div>
                 <div class="custom-timer-input">
 					<span>或自定義:</span>
-					<input type="number" id="customTimer" min="10" max="600" placeholder="秒" onchange="selectTimer('custom')">
+					<input type="number" id="customTimer" min="10" max="1200" placeholder="600" onchange="selectTimer('custom')">
 					<span>秒</span>
 				</div>
             </div>
