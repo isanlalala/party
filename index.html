@@ -404,6 +404,443 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(0.95); }
         }
+		
+		/* Team Screen */
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .name-inputs {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .name-input {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .name-input input {
+            flex: 1;
+        }
+
+        .remove-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            min-width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            background: #ff5252;
+            transform: scale(1.1);
+        }
+
+        .player-number {
+            background: #4facfe;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: grid;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .team-section, .seat-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #4facfe;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .team {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid;
+        }
+
+        .team:nth-child(odd) {
+            border-top-color: #ff6b6b;
+        }
+
+        .team:nth-child(even) {
+            border-top-color: #4ecdc4;
+        }
+
+        .team h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .player-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .seat {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 3px solid #4facfe;
+        }
+
+        .seat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e1e5e9;
+            margin: 20px 0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.5s ease;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .win-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #ffd700;
+        }
+
+        .win-controls {
+            text-align: center;
+        }
+
+        .win-controls p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .win-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .win-btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #333;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .win-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+            background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+        }
+
+        .round-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .round-actions .btn {
+            width: auto;
+            min-width: 200px;
+        }
+
+        .dashboard {
+            margin-bottom: 30px;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .leaderboard {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .leaderboard h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .leader-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #4facfe;
+        }
+
+        .leader-item.first {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border-left-color: #ffd700;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .leader-item.second {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+            border-left-color: #c0c0c0;
+        }
+
+        .leader-item.third {
+            background: linear-gradient(135deg, #cd7f32 0%, #deb887 100%);
+            border-left-color: #cd7f32;
+            color: white;
+        }
+
+        .leader-rank {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 40px;
+        }
+
+        .leader-team {
+            flex: 1;
+            margin-left: 15px;
+            font-size: 1.1rem;
+        }
+
+        .leader-wins {
+            background: rgba(79, 172, 254, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4facfe;
+        }
+
+        .history-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-section h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-actions .btn {
+            width: auto;
+            min-width: 150px;
+        }
+		
 
         /* Results Screen */
         .results-screen {
@@ -844,7 +1281,15 @@
 		}
 	}		
 	
-    </style>
+    
+#teamResults, #seatResults {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+</style>
 </head>
 <body>
     <!-- Home Screen -->
@@ -854,9 +1299,10 @@
             <button class="btn" onclick="showScreen('setupScreen')">🎮開始遊戲 Start Game</button>
             <button class="btn" onclick="showScreen('categoryScreen')">⚙️管理詞庫 Manage Categories</button>
             <button class="btn" onclick="showScreen('seatScreen')">🪑Seat Assignment</button>
+			<button class="btn" onclick="showScreen('teamScreen')">🎯Team Assignment</button>
         </div>
     </div>
-
+	
     <!-- Setup Screen -->
     <div class="screen" id="setupScreen">
         <button class="back-btn" onclick="showScreen('homeScreen')">← 返回</button>
@@ -984,6 +1430,94 @@
             <div class="seat-number" id="seatNumber">1</div>
             <div class="total-players" id="totalPlayers">out of 8 players</div>
             <button class="reset-btn" onclick="resetAssignment()">Assign Again</button>
+        </div>
+    </div>
+	
+	<!-- Team Screen -->
+    <div class="screen" id="teamScreen">
+		<button class="back-btn" onclick="showScreen('homeScreen')">← 返回</button>
+		<div class="team-screen">
+            <h1>🎯 Team & Seat Assignment</h1>
+            <p>Organize players into teams and assign seats easily</p>
+        </div>
+
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- Step 1: Number of Players -->
+            <div class="step active" id="step1">
+                <h2 class="step-title">Step 1: How many players?</h2>
+                <div class="input-group">
+                    <label for="playerCount">Number of Players:</label>
+                    <input type="number" id="playerCount" min="2" max="50" placeholder="Enter number of players">
+                </div>
+                <button class="btn" onclick="nextStep(1)">Next →</button>
+            </div>
+
+            <!-- Step 2: Number of Teams -->
+            <div class="step" id="step2">
+                <h2 class="step-title">Step 2: How many teams?</h2>
+                <div class="input-group">
+                    <label for="teamCount">Number of Teams:</label>
+                    <input type="number" id="teamCount" min="2" max="10" placeholder="Enter number of teams">
+                </div>
+                <button class="btn" onclick="nextStep(2)">Next →</button>
+            </div>
+
+            <!-- Step 3: Player Names -->
+            <div class="step" id="step3">
+                <h2 class="step-title">Step 3: Enter player names</h2>
+                <div id="nameInputs" class="name-inputs"></div>
+                <button class="btn" onclick="nextStep(3)">Assign Teams & Seats →</button>
+            </div>
+
+            <!-- Step 4: Results -->
+            <div class="step" id="step4">
+                <h2 class="step-title">🎉 Assignment Complete!</h2>
+                <div class="results">
+                    <div class="team-section">
+                        <div class="section-title">
+                            👥 Team Assignments
+                        </div>
+                        <div id="teamResults" class="team-grid"></div>
+                    </div>
+
+                    <div class="seat-section">
+                        <div class="section-title">
+                            💺 Seat Assignments
+                        </div>
+                        <div id="seatResults" class="seat-grid"></div>
+                    </div>
+
+                    <div class="win-section">
+                        <div class="section-title">
+                            🏆 Record Winner
+                        </div>
+                        <div class="win-controls">
+                            <p>Round <span id="roundNumber">1</span> - Select the winning team:</p>
+                            <div id="winButtons" class="win-buttons"></div>
+                            <div class="round-actions">
+                                <button class="btn" onclick="nextRound()">🔄 Next Round (Reassign Teams)</button>
+                                <button class="btn reset-btn" onclick="showDashboard()">📊 View Dashboard</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn reset-btn" onclick="reset()">🔄 Start Over</button>
+            </div>
+
+            <!-- Step 5: Dashboard -->
+            <div class="step" id="step5">
+                <h2 class="step-title">📊 Win Dashboard</h2>
+                <div id="dashboardContent" class="dashboard"></div>
+                <div class="dashboard-actions">
+                    <button class="btn" onclick="backToGame()">⬅️ Back to Game</button>
+                    <button class="btn reset-btn" onclick="clearHistory()">🗑️ Clear History</button>
+                    <button class="btn reset-btn" onclick="reset()">🔄 Start New Game</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2054,6 +2588,465 @@
             resultDiv.classList.remove('show');
             usedSeats = [];
         }
+		
+		// Team 
+		let currentStep = 1;
+        let players = [];
+        let teams = [];
+        let seats = [];
+        let winHistory = []; // Store win history
+        let roundCounter = 1;
+
+        function updateProgress() {
+            const progress = (currentStep - 1) / 4 * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            updateProgress();
+        }
+
+        function nextStep(step) {
+            if (step === 1) {
+                const playerCount = parseInt(document.getElementById('playerCount').value);
+                if (!playerCount || playerCount < 2) {
+                    alert('Please enter at least 2 players');
+                    return;
+                
+    if (stepNumber === 3) {
+        // Collect player names from inputs
+        const nameInputs = document.querySelectorAll('#nameInputs input');
+        gameState.players = Array.from(nameInputs).map(input => input.value || `Player ${Math.random().toString(36).substr(2,3)}`);
+
+        // Shuffle players
+        const shuffledPlayers = [...gameState.players].sort(() => Math.random() - 0.5);
+
+        // Assign teams
+        const numTeams = parseInt(document.getElementById('teamCount').value, 10) || 2;
+        const teams = Array.from({ length: numTeams }, () => []);
+        shuffledPlayers.forEach((player, i) => {
+            teams[i % numTeams].push(player);
+        });
+
+        // Save results
+        gameState.teamResults = teams;
+        gameState.seatResults = shuffledPlayers;
+
+        // Display results in UI
+        const teamResultsDiv = document.getElementById('teamResults');
+        teamResultsDiv.innerHTML = '';
+        teams.forEach((team, idx) => {
+            const teamDiv = document.createElement('div');
+            teamDiv.className = 'team';
+            teamDiv.innerHTML = `<h3>Team ${idx+1}</h3>` + team.map(p => `<span class='player-tag'>${p}</span>`).join('');
+            teamResultsDiv.appendChild(teamDiv);
+        });
+
+        const seatResultsDiv = document.getElementById('seatResults');
+        seatResultsDiv.innerHTML = '';
+        shuffledPlayers.forEach((player, idx) => {
+            const seatDiv = document.createElement('div');
+            seatDiv.className = 'seat';
+            seatDiv.innerHTML = `<div class='seat-number'>${idx+1}</div><div>${player}</div>`;
+            seatResultsDiv.appendChild(seatDiv);
+        });
+    }
+}
+                currentStep = 2;
+                showStep(2);
+            } else if (step === 2) {
+                const teamCount = parseInt(document.getElementById('teamCount').value);
+                const playerCount = parseInt(document.getElementById('playerCount').value);
+                if (!teamCount || teamCount < 2 || teamCount > playerCount) {
+                    alert('Please enter a valid number of teams (2 or more, but not more than players)');
+                    return;
+                }
+                generateNameInputs();
+                currentStep = 3;
+                showStep(3);
+            } else if (step === 3) {
+                if (validateNames()) {
+                    assignTeamsAndSeats();
+                    currentStep = 4;
+                    showStep(4);
+                }
+            }
+        }
+
+        function generateNameInputs() {
+            const playerCount = parseInt(document.getElementById('playerCount').value);
+            const container = document.getElementById('nameInputs');
+            const defaultNames = ['I San', 'Ricky', 'Angela', 'Lawrence', 'Suzanne', 'Oscar', 'Jose', 'Charlene'];
+            
+            container.innerHTML = '';
+
+            // Add default names button
+            const defaultDiv = document.createElement('div');
+            defaultDiv.style.marginBottom = '20px';
+            defaultDiv.style.textAlign = 'center';
+            defaultDiv.innerHTML = `
+                <button type="button" class="btn" style="width: auto; margin-right: 10px;" onclick="useDefaultNames()">
+                    🎯 Use Default Players
+                </button>
+                <button type="button" class="btn reset-btn" style="width: auto;" onclick="clearAllNames()">
+                    🗑️ Clear All
+                </button>
+            `;
+            container.appendChild(defaultDiv);
+
+            for (let i = 1; i <= playerCount; i++) {
+                const div = document.createElement('div');
+                div.className = 'name-input';
+                div.innerHTML = `
+                    <div class="player-number">${i}</div>
+                    <input type="text" id="player${i}" placeholder="Enter player ${i} name" 
+                           value="${i <= defaultNames.length ? defaultNames[i-1] : ''}" required>
+                    <button type="button" class="remove-btn" onclick="removePlayer(${i})" title="Remove this player">
+                        ❌
+                    </button>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        function useDefaultNames() {
+            const playerCount = parseInt(document.getElementById('playerCount').value);
+            const defaultNames = ['I San', 'Ricky', 'Angela', 'Lawrence', 'Suzanne', 'Oscar', 'Jose', 'Charlene'];
+            
+            for (let i = 1; i <= playerCount; i++) {
+                const input = document.getElementById(`player${i}`);
+                if (input && i <= defaultNames.length) {
+                    input.value = defaultNames[i-1];
+                }
+            }
+        }
+
+        function clearAllNames() {
+            const playerCount = parseInt(document.getElementById('playerCount').value);
+            for (let i = 1; i <= playerCount; i++) {
+                const input = document.getElementById(`player${i}`);
+                if (input) {
+                    input.value = '';
+                }
+            }
+        }
+
+        function removePlayer(playerNum) {
+            const input = document.getElementById(`player${playerNum}`);
+            if (input) {
+                input.value = '';
+            }
+        }
+
+        function validateNames() {
+            const playerCount = parseInt(document.getElementById('playerCount').value);
+            const filledNames = [];
+            
+            // Collect all non-empty names
+            for (let i = 1; i <= playerCount; i++) {
+                const name = document.getElementById(`player${i}`).value.trim();
+                if (name) {
+                    filledNames.push(name);
+                }
+            }
+            
+            if (filledNames.length < 2) {
+                alert('Please enter at least 2 player names');
+                return false;
+            }
+            
+            // Update the actual player count based on filled names
+            const teamCount = parseInt(document.getElementById('teamCount').value);
+            if (teamCount > filledNames.length) {
+                alert(`Number of teams (${teamCount}) cannot be more than players with names (${filledNames.length})`);
+                return false;
+            }
+            
+            return true;
+        }
+
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function assignTeamsAndSeats() {
+            const playerCount = parseInt(document.getElementById('playerCount').value);
+            const teamCount = parseInt(document.getElementById('teamCount').value);
+
+            // Collect only filled player names
+            players = [];
+            for (let i = 1; i <= playerCount; i++) {
+                const name = document.getElementById(`player${i}`).value.trim();
+                if (name) {
+                    players.push(name);
+                }
+            }
+
+            // Use actual number of players with names
+            const actualPlayerCount = players.length;
+
+            // Shuffle players for random assignment
+            const shuffledPlayers = shuffle(players);
+
+            // Initialize teams
+            teams = [];
+            for (let i = 0; i < teamCount; i++) {
+                teams.push({
+                    name: `Team ${i + 1}`,
+                    players: []
+                });
+            }
+
+            // Assign players to teams (distribute evenly, with extra players in first teams)
+            const baseSize = Math.floor(actualPlayerCount / teamCount);
+            const remainder = actualPlayerCount % teamCount;
+
+            let playerIndex = 0;
+            for (let i = 0; i < teamCount; i++) {
+                const teamSize = baseSize + (i < remainder ? 1 : 0);
+                for (let j = 0; j < teamSize; j++) {
+                    teams[i].players.push(shuffledPlayers[playerIndex]);
+                    playerIndex++;
+                }
+            }
+
+            // Generate seat assignments (random order)
+            const shuffledForSeats = shuffle(players);
+            seats = shuffledForSeats.map((player, index) => ({
+                number: index + 1,
+                player: player
+            }));
+
+            displayResults();
+            generateWinButtons();
+        }
+
+        function displayResults() {
+            // Display team results
+            const teamResults = document.getElementById('teamResults');
+            teamResults.innerHTML = '';
+
+            teams.forEach(team => {
+                const teamDiv = document.createElement('div');
+                teamDiv.className = 'team';
+                teamDiv.innerHTML = `
+                    <h3>${team.name} (${team.players.length} players)</h3>
+                    <div class="player-list">
+                        ${team.players.map(player => `<span class="player-tag">${player}</span>`).join('')}
+                    </div>
+                `;
+                teamResults.appendChild(teamDiv);
+            });
+
+            // Display seat results
+            const seatResults = document.getElementById('seatResults');
+            seatResults.innerHTML = '';
+
+            seats.forEach(seat => {
+                const seatDiv = document.createElement('div');
+                seatDiv.className = 'seat';
+                seatDiv.innerHTML = `
+                    <div class="seat-number">Seat ${seat.number}</div>
+                    <div>${seat.player}</div>
+                `;
+                seatResults.appendChild(seatDiv);
+            });
+        }
+
+        function generateWinButtons() {
+            const winButtons = document.getElementById('winButtons');
+            const roundNumber = document.getElementById('roundNumber');
+            
+            winButtons.innerHTML = '';
+            roundNumber.textContent = roundCounter;
+            
+            teams.forEach((team, index) => {
+                const button = document.createElement('button');
+                button.className = 'win-btn';
+                button.textContent = `${team.name} Wins! 🏆`;
+                button.onclick = () => recordWin(team.name);
+                winButtons.appendChild(button);
+            });
+        }
+
+        function recordWin(teamName) {
+            // Find the winning team and get its players
+            const winningTeam = teams.find(team => team.name === teamName);
+            const winningPlayers = winningTeam ? winningTeam.players : [];
+            
+            const win = {
+                round: roundCounter,
+                winner: teamName,
+                winningPlayers: [...winningPlayers],
+                teams: teams.map(t => ({name: t.name, players: [...t.players]})),
+                timestamp: new Date()
+            };
+            
+            winHistory.push(win);
+            
+            // Show confirmation with player names
+            const playersText = winningPlayers.join(', ');
+            alert(`${teamName} wins Round ${roundCounter}! 🎉\nWinning Players: ${playersText}`);
+            
+            // Update win buttons to show recorded win
+            const winButtons = document.getElementById('winButtons');
+            winButtons.innerHTML = `
+                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+                           color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h3>🎉 ${teamName} Wins Round ${roundCounter}!</h3>
+                    <p>Winners: ${playersText}</p>
+                    <p>Ready for the next round?</p>
+                </div>
+            `;
+        }
+
+        function nextRound() {
+            roundCounter++;
+            // Reassign teams with same players but shuffled
+            const currentPlayers = [...players];
+            assignTeamsAndSeats();
+            
+            alert(`Round ${roundCounter} - Teams have been reshuffled! 🔄`);
+        }
+
+        function showDashboard() {
+            generateDashboard();
+            currentStep = 5;
+            showStep(5);
+        }
+
+        function generateDashboard() {
+            const dashboardContent = document.getElementById('dashboardContent');
+            
+            if (winHistory.length === 0) {
+                dashboardContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h3>No games recorded yet! 🎮</h3>
+                        <p>Play some rounds and record winners to see statistics here.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Calculate individual player statistics
+            const playerWins = {};
+            const playerParticipation = {};
+            
+            winHistory.forEach(win => {
+                // Count wins for each winning player
+                win.winningPlayers.forEach(player => {
+                    playerWins[player] = (playerWins[player] || 0) + 1;
+                });
+                
+                // Count total participation for each player
+                win.teams.forEach(team => {
+                    team.players.forEach(player => {
+                        playerParticipation[player] = (playerParticipation[player] || 0) + 1;
+                    });
+                });
+            });
+            
+            // Calculate win rates
+            const playerStats = Object.keys(playerParticipation).map(player => ({
+                name: player,
+                wins: playerWins[player] || 0,
+                games: playerParticipation[player],
+                winRate: ((playerWins[player] || 0) / playerParticipation[player] * 100).toFixed(1)
+            }));
+            
+            // Sort players by wins first, then by win rate
+            playerStats.sort((a, b) => {
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return parseFloat(b.winRate) - parseFloat(a.winRate);
+            });
+            
+            const topPlayer = playerStats[0];
+            const totalPlayers = playerStats.length;
+            
+            // Generate dashboard HTML
+            dashboardContent.innerHTML = `
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">${winHistory.length}</div>
+                        <div class="stat-label">Total Rounds</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${totalPlayers}</div>
+                        <div class="stat-label">Players</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${topPlayer ? topPlayer.name : 'N/A'}</div>
+                        <div class="stat-label">Top Player</div>
+                    </div>
+                </div>
+                
+                <div class="leaderboard">
+                    <h3>🏆 Player Leaderboard</h3>
+                    ${playerStats.map((player, index) => `
+                        <div class="leader-item ${index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : ''}">
+                            <div class="leader-rank">#${index + 1}</div>
+                            <div class="leader-team">
+                                <div style="font-size: 1.1rem; font-weight: bold;">${player.name}</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">${player.winRate}% win rate</div>
+                            </div>
+                            <div class="leader-wins">${player.wins}/${player.games}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="history-section">
+                    <h3>📋 Recent Game History</h3>
+                    ${winHistory.slice(-10).reverse().map(win => `
+                        <div class="history-item">
+                            <div>Round ${win.round}</div>
+                            <div><strong>${win.winner}</strong></div>
+                            <div style="font-size: 0.9rem; color: #666;">${win.winningPlayers.join(', ')}</div>
+                            <div>${win.timestamp.toLocaleTimeString()}</div>
+                        </div>
+                    `).join('')}
+                    ${winHistory.length > 10 ? '<div style="text-align: center; color: #666; margin-top: 10px;">... and ' + (winHistory.length - 10) + ' more</div>' : ''}
+                </div>
+            `;
+        }
+
+        function backToGame() {
+            currentStep = 4;
+            showStep(4);
+        }
+
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all game history? This cannot be undone.')) {
+                winHistory = [];
+                roundCounter = 1;
+                generateDashboard();
+            }
+        }
+
+        function reset() {
+            currentStep = 1;
+            players = [];
+            teams = [];
+            seats = [];
+            winHistory = [];
+            roundCounter = 1;
+            
+            document.getElementById('playerCount').value = '';
+            document.getElementById('teamCount').value = '';
+            document.getElementById('nameInputs').innerHTML = '';
+            document.getElementById('teamResults').innerHTML = '';
+            document.getElementById('seatResults').innerHTML = '';
+            document.getElementById('winButtons').innerHTML = '';
+            document.getElementById('dashboardContent').innerHTML = '';
+            
+            showStep(1);
+        }		
 
         // Initialize the app
 		
