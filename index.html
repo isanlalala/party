@@ -1289,6 +1289,274 @@
     gap: 20px;
 }
 
+
+
+/* Spin Wheel Styles */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .wheel-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .controls-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin: 0 auto 30px;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-size: 14px;
+            word-wrap: break-word;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #ff6b6b;
+            z-index: 10;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+
+        .spin-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255,107,107,0.3);
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,107,107,0.4);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .options-input {
+            margin-bottom: 30px;
+        }
+
+        .options-input h2 {
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .add-btn, .remove-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn {
+            background: #48bb78;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #38a169;
+        }
+
+        .remove-btn {
+            background: #f56565;
+            color: white;
+        }
+
+        .remove-btn:hover {
+            background: #e53e3e;
+        }
+
+        .history-section {
+            margin-top: 30px;
+        }
+
+        .history-section h2 {
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-result {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .history-time {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .clear-history-btn {
+            background: #ed8936;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .clear-history-btn:hover {
+            background: #dd7424;
+        }
+
+        .result-display {
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+
+        .result-display.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+        }
+    
 </style>
 </head>
 <body>
@@ -1300,6 +1568,7 @@
             <button class="btn" onclick="showScreen('categoryScreen')">⚙️管理詞庫 Manage Categories</button>
             <button class="btn" onclick="showScreen('seatScreen')">🪑Seat Assignment</button>
 			<button class="btn" onclick="showScreen('teamScreen')">🎯Team Assignment</button>
+			<button class="btn" onclick="showScreen('spinScreen')">🎡 Spin Wheel</button>
         </div>
     </div>
 	
@@ -1520,7 +1789,53 @@
             </div>
         </div>
     </div>
-
+    <!-- Spin Wheel Screen -->
+    <div class="screen" id="spinScreen">
+        <button class="back-btn" onclick="showScreen('homeScreen')">← 返回</button>
+        <div class="spin-screen">
+        <h1>🎯 Spin Wheel App</h1>
+		
+        
+        <div class="wheel-section">
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div class="wheel" id="wheel"></div>
+            </div>
+            <div class="result-display" id="result"></div>
+            <button class="spin-btn" id="spinBtn">Spin the Wheel!</button>
+        </div>
+        
+        <div class="controls-section">
+            <div class="options-input">
+                <h2>Wheel Options</h2>
+                <div id="optionsContainer">
+                    <div class="input-group">
+                        <input type="text" placeholder="Enter option..." value="5">
+                        <button class="remove-btn" onclick="removeOption(this)">Remove</button>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" placeholder="Enter option..." value="10">
+                        <button class="remove-btn" onclick="removeOption(this)">Remove</button>
+                    </div>
+					<div class="input-group">
+                        <input type="text" placeholder="Enter option..." value="15">
+                        <button class="remove-btn" onclick="removeOption(this)">Remove</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addOption()">Add Option</button>
+            </div>
+            
+            <div class="history-section">
+                <h2>Spin History</h2>
+                <div class="history-list" id="historyList">
+                    <p style="text-align: center; color: #718096;">No spins yet!</p>
+                </div>
+                <button class="clear-history-btn" onclick="clearHistory()">Clear History</button>
+            </div>
+        </div>
+    </div>
+	</div>
+	
     <!-- Category Management Screen -->
     <div class="screen" id="categoryScreen">
         <button class="back-btn" onclick="showScreen('homeScreen')">← 返回</button>
@@ -1584,6 +1899,8 @@
             </div>
         </div>
     </div>
+	
+
 
     <script>
 		// Force layout to reflow when device orientation changes
@@ -2518,6 +2835,255 @@
             touchStartTime: 0
         };
 		
+		//spin state
+		let spinHistory = [];
+        let isSpinning = false;
+        let currentRotation = 0;
+		
+		const colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+            '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9'
+        ];
+
+        function createWheel() {
+            const wheel = document.getElementById('wheel');
+            const options = getOptions();
+            
+            if (options.length === 0) {
+                wheel.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #e2e8f0; border-radius: 50%; color: #718096;">Add some options!</div>';
+                return;
+            }
+            
+            const radius = 175;
+            const centerX = radius;
+            const centerY = radius;
+            
+            // Create SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', '0 0 350 350');
+            
+            const anglePerSegment = (2 * Math.PI) / options.length;
+            
+            options.forEach((option, index) => {
+                const startAngle = index * anglePerSegment - Math.PI / 2; // Start from top
+                const endAngle = (index + 1) * anglePerSegment - Math.PI / 2;
+                
+                // Calculate path coordinates
+                const x1 = centerX + radius * Math.cos(startAngle);
+                const y1 = centerY + radius * Math.sin(startAngle);
+                const x2 = centerX + radius * Math.cos(endAngle);
+                const y2 = centerY + radius * Math.sin(endAngle);
+                
+                const largeArc = anglePerSegment > Math.PI ? 1 : 0;
+                
+                // Create path for segment
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const pathData = `M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+                
+                path.setAttribute('d', pathData);
+                path.setAttribute('fill', colors[index % colors.length]);
+                path.setAttribute('stroke', '#fff');
+                path.setAttribute('stroke-width', '2');
+                
+                svg.appendChild(path);
+                
+                // Add text
+                const textAngle = startAngle + anglePerSegment / 2;
+                const textRadius = radius * 0.7;
+                const textX = centerX + textRadius * Math.cos(textAngle);
+                const textY = centerY + textRadius * Math.sin(textAngle);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', textX);
+                text.setAttribute('y', textY);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dominant-baseline', 'central');
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-family', 'Arial, sans-serif');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('font-size', Math.min(16, 200 / options.length));
+                text.setAttribute('text-shadow', '1px 1px 2px rgba(0,0,0,0.5)');
+                
+                // Handle long text
+                if (option.length > 12) {
+                    const words = option.split(' ');
+                    if (words.length > 1) {
+                        const tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+                        tspan1.textContent = words[0];
+                        tspan1.setAttribute('x', textX);
+                        tspan1.setAttribute('dy', '-0.3em');
+                        
+                        const tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+                        tspan2.textContent = words.slice(1).join(' ');
+                        tspan2.setAttribute('x', textX);
+                        tspan2.setAttribute('dy', '1.2em');
+                        
+                        text.appendChild(tspan1);
+                        text.appendChild(tspan2);
+                    } else {
+                        text.textContent = option.length > 15 ? option.substring(0, 15) + '...' : option;
+                    }
+                } else {
+                    text.textContent = option;
+                }
+                
+                svg.appendChild(text);
+            });
+            
+            wheel.innerHTML = '';
+            wheel.appendChild(svg);
+        }
+
+        function getOptions() {
+            const inputs = document.querySelectorAll('#optionsContainer input');
+            return Array.from(inputs).map(input => input.value.trim()).filter(value => value !== '');
+        }
+
+        function addOption() {
+            const container = document.getElementById('optionsContainer');
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            div.innerHTML = `
+                <input type="text" placeholder="Enter option...">
+                <button class="remove-btn" onclick="removeOption(this)">Remove</button>
+            `;
+            container.appendChild(div);
+            createWheel();
+        }
+
+        function removeOption(button) {
+            const container = document.getElementById('optionsContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+                createWheel();
+            }
+        }
+
+        function spin() {
+            if (isSpinning) return;
+            
+            const options = getOptions();
+            if (options.length === 0) {
+                alert('Please add some options first!');
+                return;
+            }
+            
+            isSpinning = true;
+            const spinBtn = document.getElementById('spinBtn');
+            const wheel = document.getElementById('wheel');
+            const resultDisplay = document.getElementById('result');
+            
+            spinBtn.disabled = true;
+            spinBtn.textContent = 'Spinning...';
+            resultDisplay.classList.remove('show');
+            
+            // Random spin: 3-6 full rotations plus random final position
+            const spins = 3 + Math.random() * 3;
+            const finalAngle = Math.random() * 360;
+            const totalRotation = (spins * 360) + finalAngle;
+            currentRotation += totalRotation;
+            
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+            
+            setTimeout(() => {
+                // Calculate winning option based on current wheel position
+                const segmentAngle = 360 / options.length;
+                
+                // Get the actual final position of the wheel
+                const wheelPosition = currentRotation % 360;
+                
+                // When the wheel rotates clockwise, we need to reverse the calculation
+                // If wheel rotates 90 degrees clockwise, the segment that was at 90 degrees is now at top
+                const originalSegmentPosition = (360 - wheelPosition) % 360;
+                
+                // Find which segment was originally at this position
+                const segmentIndex = Math.floor(originalSegmentPosition / segmentAngle) % options.length;
+                const winner = options[segmentIndex];
+                
+                console.log(`Wheel position: ${wheelPosition}, Original position: ${originalSegmentPosition}, Segment angle: ${segmentAngle}, Segment index: ${segmentIndex}, Winner: ${winner}`);
+                
+                // Show result
+                resultDisplay.textContent = `🎉 ${winner}`;
+                resultDisplay.classList.add('show');
+                
+                // Add to history
+                addToHistory(winner);
+                
+                // Reset button
+                isSpinning = false;
+                spinBtn.disabled = false;
+                spinBtn.textContent = 'Spin Again!';
+            }, 4000);
+        }
+
+        function addToHistory(result) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            
+            spinHistory.unshift({
+                result: result,
+                time: timeString
+            });
+            
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            
+            if (spinHistory.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #718096;">No spins yet!</p>';
+                return;
+            }
+            
+            historyList.innerHTML = spinHistory.map(item => `
+                <div class="history-item">
+                    <span class="history-result">${item.result}</span>
+                    <span class="history-time">${item.time}</span>
+                </div>
+            `).join('');
+        }
+
+        function clearHistory() {
+            spinHistory = [];
+            updateHistoryDisplay();
+        }
+
+        // Event listeners
+        document.getElementById('spinBtn').addEventListener('click', spin);
+        
+        // Update wheel when options change
+        document.addEventListener('input', function(e) {
+            if (e.target.matches('#optionsContainer input')) {
+                createWheel();
+            }
+        });
+
+        // Initialize
+        createWheel();
+    
+
+
+		function initSpinWheel() {
+			const spinBtn = document.getElementById('spinBtn');
+			if (spinBtn && !spinBtn.dataset.bound) {
+				spinBtn.addEventListener('click', spin);
+				spinBtn.dataset.bound = "true";
+			}
+
+			if (!document.body.dataset.spinWheelInputBound) {
+				document.addEventListener('input', function(e) {
+					if (e.target.matches('#optionsContainer input')) {
+						createWheel();
+					}
+				});
+				document.body.dataset.spinWheelInputBound = "true";
+			}
+
+			createWheel();
+		}
 		
 		//seat assignment
 		let currentPlayers = 8;
@@ -3069,9 +3635,15 @@
 
         // Screen management
         function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-        }
+			if (screenId === 'spinWheelScreen') {
+				initSpinWheel();
+			}
+
+			document.querySelectorAll('.screen').forEach(screen => {
+				screen.classList.remove('active');
+			});
+			document.getElementById(screenId).classList.add('active');
+		}
 
         // Modal management
         function showModal(modalId) {
@@ -3626,5 +4198,7 @@ function requestFullScreen() {
   else if (el.msRequestFullscreen) el.msRequestFullscreen();
 }
 </script>
+
+
 </body>
 </html>
