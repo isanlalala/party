@@ -1560,6 +1560,16 @@
 </style>
 </head>
 <body>
+	<!-- Lock Screen -->
+		<div id="authScreen" class="screen active" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:linear-gradient(135deg,#667eea,#764ba2); color:white;">
+		<h2>🔒 Enter Passcode</h2>
+		<input type="password" id="passcodeInput" placeholder="Enter passcode" style="padding:10px; border-radius:8px; border:none; margin:15px 0; font-size:1rem;">
+		<button class="btn" onclick="checkPasscode()">Unlock</button>
+		<p id="authError" style="color:#ff6b6b; display:none; margin-top:10px;">❌ Incorrect passcode</p>
+	</div>
+	
+	<!-- wrap the app -->
+	<div id="appContainer" style="display:none;">
     <!-- Home Screen -->
     <div class="screen active" id="homeScreen">
         <div class="home-screen">
@@ -1899,7 +1909,7 @@
             </div>
         </div>
     </div>
-	
+</div>	
 
 
     <script>
@@ -1908,6 +1918,20 @@
 			// Trigger a reflow
 			document.body.offsetHeight;
 		});
+		
+		// Lock script
+		const APP_PASSCODE = "1234"; // change this to your desired passcode
+			function checkPasscode() {
+				const input = document.getElementById("passcodeInput").value;
+				const errorMsg = document.getElementById("authError");
+				if (input === APP_PASSCODE) {
+					document.getElementById("authScreen").style.display = "none";
+					document.getElementById("appContainer").style.display = "block";
+				} else {
+					errorMsg.style.display = "block";
+					setTimeout(() => errorMsg.style.display = "none", 2000);
+				}
+			}
 	
         // Default word packs
         const defaultCategories = {
