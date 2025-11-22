@@ -1369,20 +1369,12 @@
 
 /* Spin Wheel Styles */
 
-		/* NOTE: I removed the 'body' and '*' selectors from here 
-		   because they are already defined in Part 1. 
-		   Keeping them would cause the "Frame" issue. */
-
 		.container {
-			/* FIX: Full screen width/height instead of fixed width */
 			width: 100%;
 			height: 100%;
-			
-			/* FIX: Handle scrolling internally */
 			overflow-y: auto; 
 			overflow-x: hidden;
 			
-			/* FIX: Safe Area Padding (Notch support) */
 			padding: 20px;
 			padding-top: max(30px, env(safe-area-inset-top));
 			padding-bottom: max(80px, env(safe-area-inset-bottom));
@@ -1657,7 +1649,216 @@
 				width: 250px;
 				height: 250px;
 			}
-}
+		}
+		
+/* --- chiikawa CSS STYLING --- */
+        
+        :root {
+            --chiikawa-soft-pink: #FFC0CB; /* 柔和的粉紅色，用於進行中 */
+            --chiikawa-light-red: #F08080; /* 淺紅色邊框，用於進行中 */
+            --chiikawa-green: #bdf2c1; /* 淺綠色，用於完成 */
+            --green-border: #4CAF50; /* 綠色邊框，用於完成 */
+            --bg-light: #f4f4f9;
+            --text-color: #333;
+            --header-color: white; /* 標題維持原有的深紅色 */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .collection-container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--header-color);
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+
+        .items-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Item Card Styling */
+        .collection-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Status 1: At least one item collected (粉紅色邊框/背景) */
+        .collection-item.is-collected {
+            border: 3px solid var(--chiikawa-light-red); /* 粉紅色邊框 */
+            background-color: var(--chiikawa-soft-pink); /* 柔和的粉紅色背景 */
+        }
+        
+        /* Status 2: ALL items collected (綠色邊框/背景) */
+        .collection-item.is-complete {
+            border: 3px solid var(--green-border); 
+            background-color: var(--chiikawa-green); 
+            box-shadow: 0 8px 16px rgba(0, 150, 0, 0.3);
+        }
+
+        .item-image {
+            width: 100%;
+            max-width: 220px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            object-fit: contain;
+            aspect-ratio: 1 / 1;
+        }
+
+        .item-title {
+            font-size: 1.1em;
+            margin: 5px 0 15px 0;
+            min-height: 40px;
+        }
+
+        /* Checkbox Controls Container */
+        .character-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+            text-align: left;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .collection-control {
+            display: flex;
+            align-items: center;
+            font-size: 1em;
+            color: var(--text-color);
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .collection-checkbox {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+            cursor: pointer;
+            accent-color: var(--header-color); /* Checkbox 勾選顏色 */
+        }
+		
+/* --- chiikawa2 CSS STYLING --- */
+        
+        :root {
+            --bg-light: #f4f4f9;
+            --text-color: #333;
+            --header-color: white; /* 標題維持原有的深紅色 */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .collection-container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--header-color);
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+
+        .items-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Item Card Styling */
+        .collection-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .item-image {
+            width: 100%;
+            max-width: 220px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            object-fit: contain;
+            aspect-ratio: 1 / 1;
+        }
+
+        .item-title {
+            font-size: 1.1em;
+            margin: 5px 0 15px 0;
+            min-height: 40px;
+        }
+
+        /* Checkbox Controls Container */
+        .character-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+            text-align: left;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .collection-control {
+            display: flex;
+            align-items: center;
+            font-size: 1em;
+            color: var(--text-color);
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .collection-checkbox {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+            cursor: pointer;
+            accent-color: var(--header-color); /* Checkbox 勾選顏色 */
+        }
     
 </style>
 </head>
@@ -1670,6 +1871,8 @@
             <button class="btn" onclick="showScreen('seatScreen')">🪑Seat Assignment</button>
             <button class="btn" onclick="showScreen('teamScreen')">🎯Team Assignment</button>
             <button class="btn" onclick="showScreen('spinScreen')">🎡 Spin Wheel</button>
+			<button class="btn" onclick="showScreen('chiScreen')">💖 ちいかわ圖鑑 Mascot</button>
+			<button class="btn" onclick="showScreen('chi2Screen')">💖 ちいかわ圖鑑 Keychain</button>
         </div>
     </div>
 
@@ -1996,7 +2199,1476 @@
             </div>
         </div>
     </div>
+	
+	<div class="screen" id="chi2Screen">
+    <button class="back-btn" onclick="showScreen('homeScreen')">← 返回</button>
+	<div class="chi-screen2">
+        <h1>💖 Chiikawa 地區限定鐵牌圖鑑 💖</h1>
+        <div class="items-grid">
+            
+            <div class="collection-item" data-item-id="tokyo-skytree">
+                <h2 class="item-title">香港限定 功夫</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573626.webp" 
+                    alt="香港限定 功夫" 
+                    class="item-image"
+                >
+            </div>
+			<div class="collection-item" data-item-id="tokyo-skytree">
+                <h2 class="item-title">香港限定 維多利亞港</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573625.webp" 
+                    alt="香港限定 維多利亞港 " 
+                    class="item-image"
+                >
+            </div>
+			<div class="collection-item" data-item-id="tokyo-skytree">
+                <h2 class="item-title">香港限定 雞蛋仔</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573624.webp" 
+                    alt="香港限定 雞蛋仔" 
+                    class="item-image"
+                >
+            </div>
+			<div class="collection-item" data-item-id="tokyo-skytree">
+                <h2 class="item-title">名古屋限定 金鯱</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550040.webp" 
+                    alt="名古屋限定 金鯱" 
+                    class="item-image"
+                >
+            </div>
+		</div>
+	</div>
+	</div>
+	
+	<div class="screen" id="chiScreen">
+    <button class="back-btn" onclick="showScreen('homeScreen')">← 返回</button>
+	<div class="chi-screen">
+        <h1>💖 Chiikawa 地區限定吊飾圖鑑 💖</h1>
+        <div class="items-grid">
+            
+            <div class="collection-item" data-item-id="tokyo-skytree">
+                <h2 class="item-title">東京晴空塔 吊飾 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550179.webp" 
+                    alt="東京晴空塔 Chiikawa 吊飾" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="tokyo-skytree-chiikawa">
+                        <input type="checkbox" id="tokyo-skytree-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
 
+                    <label class="collection-control" for="tokyo-skytree-hachiware">
+                        <input type="checkbox" id="tokyo-skytree-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="tokyo-skytree-usagi">
+                        <input type="checkbox" id="tokyo-skytree-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="osaka-takoyaki">
+                <h2 class="item-title">大阪限定 章魚燒 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550205.webp" 
+                    alt="大阪章魚燒 Chiikawa 吊飾" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="osaka-takoyaki-chiikawa">
+                        <input type="checkbox" id="osaka-takoyaki-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="osaka-takoyaki-hachiware">
+                        <input type="checkbox" id="osaka-takoyaki-hachiware" class="collection-checkbox" checked>  
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="osaka-takoyaki-usagi">
+                        <input type="checkbox" id="osaka-takoyaki-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="shizuoka-mandarin">
+                <h2 class="item-title">靜岡限定 蜜柑 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/10/574282.webp" 
+                    alt="靜岡限定 蜜柑" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="shizuoka-mandarin-chiikawa">
+                        <input type="checkbox" id="shizuoka-mandarin-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="shizuoka-mandarin-hachiware">
+                        <input type="checkbox" id="shizuoka-mandarin-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="shizuoka-mandarin-usagi">
+                        <input type="checkbox" id="shizuoka-mandarin-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+            
+            <div class="collection-item" data-item-id="macau-egg-tart">
+                <h2 class="item-title">澳門限定 蛋撻 (其他)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/10/574471.webp" 
+                    alt="澳門限定 蛋撻" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="macau-egg-tart-chiikawa">
+                        <input type="checkbox" id="macau-egg-tart-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="macau-egg-tart-hachiware">
+                        <input type="checkbox" id="macau-egg-tart-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="macau-egg-tart-usagi">
+                        <input type="checkbox" id="macau-egg-tart-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+            
+            <div class="collection-item" data-item-id="shiga-raccoon">
+                <h2 class="item-title">滋賀限定 信樂狸貓 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/10/574281-300x257.webp" 
+                    alt="滋賀限定 信樂狸貓" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="shiga-raccoon-chiikawa">
+                        <input type="checkbox" id="shiga-raccoon-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="shiga-raccoon-hachiware">
+                        <input type="checkbox" id="shiga-raccoon-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="shiga-raccoon-usagi">
+                        <input type="checkbox" id="shiga-raccoon-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+			<div class="collection-item" data-item-id="shiga-ninja">
+                <h2 class="item-title">滋賀限定 忍者 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/10/574130.webp" 
+                    alt="滋賀限定 忍者" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="shiga-ninja-chiikawa">
+                        <input type="checkbox" id="shiga-ninja-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="shiga-ninja-hachiware">
+                        <input type="checkbox" id="shiga-ninja-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="shiga-ninja-usagi">
+                        <input type="checkbox" id="shiga-ninja-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="tokyo-tower">
+                <h2 class="item-title">東京限定 東京鐵塔 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573793.webp" 
+                    alt="東京限定 東京鐵塔" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="tokyo-tower-chiikawa">
+                        <input type="checkbox" id="tokyo-tower-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="tokyo-tower-hachiware">
+                        <input type="checkbox" id="tokyo-tower-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="tokyo-tower-usagi">
+                        <input type="checkbox" id="tokyo-tower-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="hokkaido-lavender">
+                <h2 class="item-title">北海道限定 薰衣草 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/10/574132.webp" 
+                    alt="北海道限定 薰衣草" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="hokkaido-lavender-chiikawa">
+                        <input type="checkbox" id="hokkaido-lavender-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="hokkaido-lavender-hachiware">
+                        <input type="checkbox" id="hokkaido-lavender-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="saitama-onion">
+                <h2 class="item-title">埼玉限定 深谷蔥 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573810.webp" 
+                    alt="埼玉限定 深谷蔥" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="saitama-onion-chiikawa">
+                        <input type="checkbox" id="saitama-onion-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="tochigi-wisteria-hachiware">
+                        <input type="checkbox" id="tochigi-wisteria-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="tochigi-wisteria-usagi">
+                        <input type="checkbox" id="tochigi-wisteria-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="tochigi-wisteria">
+                <h2 class="item-title">栃木限定 紫藤花 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573791.webp" 
+                    alt="栃木限定 紫藤花" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="tochigi-wisteria-chiikawa">
+                        <input type="checkbox" id="tochigi-wisteria-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="tochigi-wisteria-hachiware">
+                        <input type="checkbox" id="tochigi-wisteria-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="tochigi-wisteria-usagi">
+                        <input type="checkbox" id="tochigi-wisteria-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="nara-deer">
+                <h2 class="item-title">奈良限定 鹿 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573780.webp" 
+                    alt="奈良限定 鹿" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="nara-deer-chiikawa">
+                        <input type="checkbox" id="nara-deer-chiikawa" class="collection-checkbox" checked>  
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="nara-deer-hachiware">
+                        <input type="checkbox" id="nara-deer-hachiware" class="collection-checkbox" checked>  
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="nara-deer-usagi">
+                        <input type="checkbox" id="nara-deer-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="hokkaido-melon">
+                <h2 class="item-title">北海道限定 蜜瓜 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573628.webp" 
+                    alt="北海道限定 蜜瓜" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="hokkaido-melon-chiikawa">
+                        <input type="checkbox" id="hokkaido-melon-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="hokkaido-melon-hachiware">
+                        <input type="checkbox" id="hokkaido-melon-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="hokkaido-melon-usagi">
+                        <input type="checkbox" id="hokkaido-melon-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="mt-fuji">
+                <h2 class="item-title">富士山限定 富士山 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550037.webp" 
+                    alt="富士山限定 富士山" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="mt-fuji-chiikawa">
+                        <input type="checkbox" id="mt-fuji-chiikawa" class="collection-checkbox" checked>  
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="mt-fuji-hachiware">
+                        <input type="checkbox" id="mt-fuji-hachiware" class="collection-checkbox">  
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+			<div class="collection-item" data-item-id="iwate-soba">
+                <h2 class="item-title">岩手限定 碗子蕎麥麵 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/08/573794.webp" 
+                    alt="岩手限定 碗子蕎麥麵" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="iwate-soba-chiikawa">
+                        <input type="checkbox" id="iwate-soba-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="aichi-kinshachi">
+                <h2 class="item-title">名古屋限定 金鯱 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550038.webp" 
+                    alt="名古屋限定 金鯱" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="aichi-kinshachi-chiikawa">
+                        <input type="checkbox" id="aichi-kinshachi-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="aichi-kinshachi-hachiware">
+                        <input type="checkbox" id="aichi-kinshachi-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+			<div class="collection-item" data-item-id="kyoto-yatsuhashi">
+                <h2 class="item-title">京都限定 八橋 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550035.webp" 
+                    alt="京都限定 八橋" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="kyoto-yatsuhashi-chiikawa">
+                        <input type="checkbox" id="kyoto-yatsuhashi-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="kyoto-yatsuhashi-hachiware">
+                        <input type="checkbox" id="kyoto-yatsuhashi-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="miyagi-masamune">
+                <h2 class="item-title">宮城限定 伊達政宗 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550098.webp" 
+                    alt="宮城限定 伊達政宗" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="miyagi-masamune-chiikawa">
+                        <input type="checkbox" id="miyagi-masamune-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="yamagata-cherry">
+                <h2 class="item-title">山形限定 櫻桃 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550082.webp" 
+                    alt="山形限定 櫻桃" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="yamagata-cherry-chiikawa">
+                        <input type="checkbox" id="yamagata-cherry-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="setouchi-lemon">
+                <h2 class="item-title">瀨戶內限定 瀨戶內檸檬 (中國・四國)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550083.webp" 
+                    alt="瀨戶內限定 瀨戶內檸檬" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="setouchi-lemon-chiikawa">
+                        <input type="checkbox" id="setouchi-lemon-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="setouchi-lemon-hachiware">
+                        <input type="checkbox" id="setouchi-lemon-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+			<div class="collection-item" data-item-id="okayama-momotaro">
+                <h2 class="item-title">岡山限定 桃太郎 (中國・四國)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550084.webp" 
+                    alt="岡山限定 桃太郎" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="okayama-momotaro-chiikawa">
+                        <input type="checkbox" id="okayama-momotaro-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="okayama-momotaro-hachiware">
+                        <input type="checkbox" id="okayama-momotaro-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="kyoto-inari">
+                <h2 class="item-title">京都限定 伏見稻荷 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550102.webp" 
+                    alt="京都限定 伏見稻荷" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="kyoto-inari-chiikawa">
+                        <input type="checkbox" id="kyoto-inari-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="kyoto-inari-hachiware">
+                        <input type="checkbox" id="kyoto-inari-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="toyama-squid">
+                <h2 class="item-title">富山限定 螢火魷 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/569457.webp" 
+                    alt="富山限定 螢火魷" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="toyama-squid-chiikawa">
+                        <input type="checkbox" id="toyama-squid-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="toyama-squid-hachiware">
+                        <input type="checkbox" id="toyama-squid-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="resort-ski-a">
+                <h2 class="item-title">度假限定 滑雪 (其他)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550120.webp" 
+                    alt="度假限定 滑雪 A" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="resort-ski-a-chiikawa">
+                        <input type="checkbox" id="resort-ski-a-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="resort-ski-b">
+                <h2 class="item-title">度假限定 滑雪 (其他)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550121.webp" 
+                    alt="度假限定 滑雪 B" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="resort-ski-b-hachiware">
+                        <input type="checkbox" id="resort-ski-b-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="ibaraki-komon">
+                <h2 class="item-title">茨城限定 黃門大人 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550122.webp" 
+                    alt="茨城限定 黃門大人" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="ibaraki-komon-chiikawa">
+                        <input type="checkbox" id="ibaraki-komon-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="ibaraki-komon-hachiware">
+                        <input type="checkbox" id="ibaraki-komon-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="onsen-hot-springs">
+                <h2 class="item-title">温泉地限定 溫泉 (其他)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550123.webp" 
+                    alt="温泉地限定 溫泉" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="onsen-hot-springs-chiikawa">
+                        <input type="checkbox" id="onsen-hot-springs-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="onsen-hot-springs-hachiware">
+                        <input type="checkbox" id="onsen-hot-springs-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="onsen-hot-springs-usagi">
+                        <input type="checkbox" id="onsen-hot-springs-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="kyoto-matcha">
+                <h2 class="item-title">京都限定 抹茶雪糕 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550124.webp" 
+                    alt="京都限定 抹茶雪糕" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="kyoto-matcha-chiikawa">
+                        <input type="checkbox" id="kyoto-matcha-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="kyoto-matcha-hachiware">
+                        <input type="checkbox" id="kyoto-matcha-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="kyoto-matcha-usagi">
+                        <input type="checkbox" id="kyoto-matcha-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="gunma-kusatsu">
+                <h2 class="item-title">群馬限定 草津溫泉 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550125.webp" 
+                    alt="群馬限定 草津溫泉" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="gunma-kusatsu-chiikawa">
+                        <input type="checkbox" id="gunma-kusatsu-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="gunma-kusatsu-hachiware">
+                        <input type="checkbox" id="gunma-kusatsu-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="hiroshima-momiji">
+                <h2 class="item-title">広島限定 楓葉饅頭 (中國・四國)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550126.webp" 
+                    alt="広島限定 楓葉饅頭" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="hiroshima-momiji-chiikawa">
+                        <input type="checkbox" id="hiroshima-momiji-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="hiroshima-momiji-hachiware">
+                        <input type="checkbox" id="hiroshima-momiji-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="akita-inu">
+                <h2 class="item-title">秋田限定 秋田犬 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/570131.webp" 
+                    alt="秋田限定 秋田犬" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="akita-inu-chiikawa">
+                        <input type="checkbox" id="akita-inu-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="akita-inu-hachiware">
+                        <input type="checkbox" id="akita-inu-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="akita-inu-usagi">
+                        <input type="checkbox" id="akita-inu-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="fukuoka-strawberry">
+                <h2 class="item-title">福岡限定 甘王草莓 (九州・沖繩)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550108.webp" 
+                    alt="福岡限定 甘王草莓" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="fukuoka-strawberry-chiikawa">
+                        <input type="checkbox" id="fukuoka-strawberry-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="fukuoka-strawberry-hachiware">
+                        <input type="checkbox" id="fukuoka-strawberry-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+<div class="collection-item" data-item-id="tochigi-skyberry">
+                <h2 class="item-title">栃木限定 SKYBERRY (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550128.webp" 
+                    alt="栃木限定 SKYBERRY" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="tochigi-skyberry-chiikawa">
+                        <input type="checkbox" id="tochigi-skyberry-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="tochigi-skyberry-hachiware">
+                        <input type="checkbox" id="tochigi-skyberry-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="hyogo-kobe-sailor">
+                <h2 class="item-title">兵庫限定 神戶水手 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550157.webp" 
+                    alt="兵庫限定 神戶水手" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="hyogo-kobe-sailor-chiikawa">
+                        <input type="checkbox" id="hyogo-kobe-sailor-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="hyogo-kobe-sailor-hachiware">
+                        <input type="checkbox" id="hyogo-kobe-sailor-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="hyogo-kobe-sailor-usagi">
+                        <input type="checkbox" id="hyogo-kobe-sailor-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="kyoto-shinsengumi">
+                <h2 class="item-title">京都限定 新選組 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550149.webp" 
+                    alt="京都限定 新選組" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="kyoto-shinsengumi-chiikawa">
+                        <input type="checkbox" id="kyoto-shinsengumi-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="kyoto-shinsengumi-hachiware">
+                        <input type="checkbox" id="kyoto-shinsengumi-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="kyoto-shinsengumi-usagi">
+                        <input type="checkbox" id="kyoto-shinsengumi-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="kagoshima-sakurajima">
+                <h2 class="item-title">鹿兒島限定 櫻島 (九州・沖繩)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550154.webp" 
+                    alt="鹿兒島限定 櫻島" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="kagoshima-sakurajima-chiikawa">
+                        <input type="checkbox" id="kagoshima-sakurajima-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="kagoshima-sakurajima-hachiware">
+                        <input type="checkbox" id="kagoshima-sakurajima-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="fukuoka-mentaiko">
+                <h2 class="item-title">福岡限定 明太子 (九州・沖繩)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550155.webp" 
+                    alt="福岡限定 明太子" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="fukuoka-mentaiko-chiikawa">
+                        <input type="checkbox" id="fukuoka-mentaiko-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="fukuoka-mentaiko-hachiware">
+                        <input type="checkbox" id="fukuoka-mentaiko-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="nagasaki-castella">
+                <h2 class="item-title">長崎限定 長崎蛋糕 (九州・沖繩)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550156.webp" 
+                    alt="長崎限定 長崎蛋糕" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="nagasaki-castella-chiikawa">
+                        <input type="checkbox" id="nagasaki-castella-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="nagasaki-castella-hachiware">
+                        <input type="checkbox" id="nagasaki-castella-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="mie-pearl">
+                <h2 class="item-title">三重限定 珍珠 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550198.webp" 
+                    alt="三重限定 珍珠" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="mie-pearl-chiikawa">
+                        <input type="checkbox" id="mie-pearl-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="mie-pearl-hachiware">
+                        <input type="checkbox" id="mie-pearl-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="mie-pearl-usagi">
+                        <input type="checkbox" id="mie-pearl-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+<div class="collection-item" data-item-id="kyoto-kinkakuji">
+                <h2 class="item-title">京都限定 金閣寺 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550199.webp" 
+                    alt="京都限定 金閣寺" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="kyoto-kinkakuji-chiikawa">
+                        <input type="checkbox" id="kyoto-kinkakuji-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="kyoto-kinkakuji-hachiware">
+                        <input type="checkbox" id="kyoto-kinkakuji-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="kyoto-kinkakuji-usagi">
+                        <input type="checkbox" id="kyoto-kinkakuji-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="wakayama-panda">
+                <h2 class="item-title">和歌山限定 熊貓 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550196.webp" 
+                    alt="和歌山限定 熊貓" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="wakayama-panda-chiikawa">
+                        <input type="checkbox" id="wakayama-panda-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="wakayama-panda-hachiware">
+                        <input type="checkbox" id="wakayama-panda-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="wakayama-panda-usagi">
+                        <input type="checkbox" id="wakayama-panda-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="tokyo-panda">
+                <h2 class="item-title">東京限定 熊貓 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550197.webp" 
+                    alt="東京限定 熊貓" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="tokyo-panda-chiikawa">
+                        <input type="checkbox" id="tokyo-panda-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="tokyo-panda-hachiware">
+                        <input type="checkbox" id="tokyo-panda-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="tokyo-panda-usagi">
+                        <input type="checkbox" id="tokyo-panda-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="fukui-dinosaur">
+                <h2 class="item-title">福井限定 恐龍 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550195.webp" 
+                    alt="福井限定 恐龍" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="fukui-dinosaur-chiikawa">
+                        <input type="checkbox" id="fukui-dinosaur-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="fukui-dinosaur-hachiware">
+                        <input type="checkbox" id="fukui-dinosaur-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="fukushima-akabeko">
+                <h2 class="item-title">福島限定 赤牛 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550200.webp" 
+                    alt="福島限定 赤牛" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="fukushima-akabeko-chiikawa">
+                        <input type="checkbox" id="fukushima-akabeko-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="fukushima-akabeko-hachiware">
+                        <input type="checkbox" id="fukushima-akabeko-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="niigata-sasazushi">
+                <h2 class="item-title">新潟限定 笹團子 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550201.webp" 
+                    alt="新潟限定 笹團子" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="niigata-sasazushi-chiikawa">
+                        <input type="checkbox" id="niigata-sasazushi-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="niigata-sasazushi-hachiware">
+                        <input type="checkbox" id="niigata-sasazushi-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="hokkaido-map">
+                <h2 class="item-title">北海道限定 北海道 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550202.webp" 
+                    alt="北海道限定 北海道" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="hokkaido-map-chiikawa">
+                        <input type="checkbox" id="hokkaido-map-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="hokkaido-map-hachiware">
+                        <input type="checkbox" id="hokkaido-map-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="hokkaido-map-usagi">
+                        <input type="checkbox" id="hokkaido-map-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="shiga-biwalake">
+                <h2 class="item-title">滋賀限定 琵琶湖 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550203.webp" 
+                    alt="滋賀限定 琵琶湖" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="shiga-biwalake-chiikawa">
+                        <input type="checkbox" id="shiga-biwalake-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="shiga-biwalake-hachiware">
+                        <input type="checkbox" id="shiga-biwalake-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="shiga-biwalake-usagi">
+                        <input type="checkbox" id="shiga-biwalake-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="shiga-hikonecastle">
+                <h2 class="item-title">滋賀限定 彥根城 (關西)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550204.webp" 
+                    alt="滋賀限定 彥根城" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="shiga-hikonecastle-chiikawa">
+                        <input type="checkbox" id="shiga-hikonecastle-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="shiga-hikonecastle-hachiware">
+                        <input type="checkbox" id="shiga-hikonecastle-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="shiga-hikonecastle-usagi">
+                        <input type="checkbox" id="shiga-hikonecastle-usagi" class="collection-checkbox" checked> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="nagano-apple">
+                <h2 class="item-title">長野限定 蘋果 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550206.webp" 
+                    alt="長野限定 蘋果" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="nagano-apple-chiikawa">
+                        <input type="checkbox" id="nagano-apple-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="nagano-apple-hachiware">
+                        <input type="checkbox" id="nagano-apple-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="gunma-daruma">
+                <h2 class="item-title">群馬限定 達摩 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550207.webp" 
+                    alt="群馬限定 達摩" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="gunma-daruma-chiikawa">
+                        <input type="checkbox" id="gunma-daruma-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="gunma-daruma-hachiware">
+                        <input type="checkbox" id="gunma-daruma-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="kumamoto-castle">
+                <h2 class="item-title">熊本限定 熊本城 (九州・沖繩)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/550227.webp" 
+                    alt="熊本限定 熊本城" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="kumamoto-castle-chiikawa">
+                        <input type="checkbox" id="kumamoto-castle-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="kumamoto-castle-hachiware">
+                        <input type="checkbox" id="kumamoto-castle-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="fukushima-hawaiians">
+                <h2 class="item-title">福島限定 夏威夷人 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/562390.webp" 
+                    alt="福島限定 夏威夷人" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="fukushima-hawaiians-chiikawa">
+                        <input type="checkbox" id="fukushima-hawaiians-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="fukushima-hawaiians-hachiware">
+                        <input type="checkbox" id="fukushima-hawaiians-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="okinawa-whaleshark">
+                <h2 class="item-title">沖繩限定 鯨鯊 (九州・沖繩)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2024/12/562402.webp" 
+                    alt="沖繩限定 鯨鯊" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="okinawa-whaleshark-chiikawa">
+                        <input type="checkbox" id="okinawa-whaleshark-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="okinawa-whaleshark-hachiware">
+                        <input type="checkbox" id="okinawa-whaleshark-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="yamanashi-grape">
+                <h2 class="item-title">山梨限定 葡萄 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/01/567530.webp" 
+                    alt="山梨限定 葡萄" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="yamanashi-grape-chiikawa">
+                        <input type="checkbox" id="yamanashi-grape-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="yamanashi-grape-hachiware">
+                        <input type="checkbox" id="yamanashi-grape-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="yamanashi-grape-usagi">
+                        <input type="checkbox" id="yamanashi-grape-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="miyagi-kamaboko">
+                <h2 class="item-title">宮城限定 笹魚糕 (北海道・東北)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/01/567538.webp" 
+                    alt="宮城限定 笹魚糕" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="miyagi-kamaboko-chiikawa">
+                        <input type="checkbox" id="miyagi-kamaboko-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="yamaguchi-fugu">
+                <h2 class="item-title">山口限定 河豚 (中國・四國)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/01/567564.webp" 
+                    alt="山口限定 河豚" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="yamaguchi-fugu-chiikawa">
+                        <input type="checkbox" id="yamaguchi-fugu-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="yamaguchi-fugu-hachiware">
+                        <input type="checkbox" id="yamaguchi-fugu-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="airport-pilot">
+                <h2 class="item-title">空港限定 機長 (其他)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/02/569063.webp" 
+                    alt="空港限定 機長" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="airport-pilot-chiikawa">
+                        <input type="checkbox" id="airport-pilot-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="airport-pilot-hachiware">
+                        <input type="checkbox" id="airport-pilot-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="airport-pilot-usagi">
+                        <input type="checkbox" id="airport-pilot-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="gifu-sarubobo">
+                <h2 class="item-title">飛騨高山限定 猿寶寶 (中部)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/02/567761.webp" 
+                    alt="飛騨高山限定 猿寶寶" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="gifu-sarubobo-chiikawa">
+                        <input type="checkbox" id="gifu-sarubobo-chiikawa" class="collection-checkbox" checked > 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="gifu-sarubobo-hachiware">
+                        <input type="checkbox" id="gifu-sarubobo-hachiware" class="collection-checkbox"checked > 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="gifu-sarubobo-usagi">
+                        <input type="checkbox" id="gifu-sarubobo-usagi" class="collection-checkbox"checked > 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="saitama-sweetpotato">
+                <h2 class="item-title">埼玉限定 番薯 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/01/567563.webp" 
+                    alt="埼玉限定 番薯" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="saitama-sweetpotato-chiikawa">
+                        <input type="checkbox" id="saitama-sweetpotato-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="saitama-sweetpotato-hachiware">
+                        <input type="checkbox" id="saitama-sweetpotato-hachiware" class="collection-checkbox"> 
+                        ハチワレ (Hachiware)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="tokyo-kaminarimon">
+                <h2 class="item-title">東京限定 雷門 (關東)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/01/567562.webp" 
+                    alt="東京限定 雷門" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="tokyo-kaminarimon-chiikawa">
+                        <input type="checkbox" id="tokyo-kaminarimon-chiikawa" class="collection-checkbox" checked> 
+                        ちいかわ (Chiikawa)
+                    </label>
+
+                    <label class="collection-control" for="tokyo-kaminarimon-hachiware">
+                        <input type="checkbox" id="tokyo-kaminarimon-hachiware" class="collection-checkbox" checked> 
+                        ハチワレ (Hachiware)
+                    </label>
+
+                    <label class="collection-control" for="tokyo-kaminarimon-usagi">
+                        <input type="checkbox" id="tokyo-kaminarimon-usagi" class="collection-checkbox"> 
+                        うさぎ (Usagi)
+                    </label>
+                </div>
+            </div>
+
+            <div class="collection-item" data-item-id="miyazaki-mango">
+                <h2 class="item-title">宮崎限定 芒果 (九州・沖繩)</h2>
+                
+                <img 
+                    src="https://www.chiikawatribe.com/wp-content/uploads/2025/07/569425.webp" 
+                    alt="宮崎限定 芒果" 
+                    class="item-image"
+                >
+                
+                <div class="character-controls">
+                    <label class="collection-control" for="miyazaki-mango-chiikawa">
+                        <input type="checkbox" id="miyazaki-mango-chiikawa" class="collection-checkbox"> 
+                        ちいかわ (Chiikawa)
+                    </label>
+                </div>
+            </div>
+		</div>
+	</div>
+	</div>
+	
     <script>
 		// Force layout to reflow when device orientation changes
 		window.addEventListener("orientationchange", () => {
@@ -5334,6 +7006,73 @@ function requestFullScreen() {
   else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
   else if (el.msRequestFullscreen) el.msRequestFullscreen();
 }
+
+/* --- Chiikawa JAVASCRIPT PERSISTENCE LOGIC (無需修改) --- */
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const allItems = document.querySelectorAll('.collection-item');
+            const checkboxes = document.querySelectorAll('.collection-checkbox');
+
+            /**
+             * Function to update the card highlight status (Pink or Green)
+             */
+            const updateCardStatus = (cardElement) => {
+                const itemCheckboxes = cardElement.querySelectorAll('.collection-checkbox');
+                
+                // Determine collection status
+                const isAnyCollected = Array.from(itemCheckboxes).some(chk => chk.checked);
+                const isAllCollected = Array.from(itemCheckboxes).every(chk => chk.checked); 
+
+                // 1. Reset classes
+                cardElement.classList.remove('is-collected', 'is-complete');
+                
+                // 2. Apply status classes
+                if (isAllCollected) {
+                    cardElement.classList.add('is-complete');
+                } else if (isAnyCollected) {
+                    cardElement.classList.add('is-collected');
+                }
+            }
+
+
+            /**
+             * 1. Load the stored state from Local Storage when the page loads.
+             */
+            checkboxes.forEach(checkbox => {
+                const itemId = checkbox.id;
+                const storedState = localStorage.getItem(itemId);
+
+                if (storedState === 'collected') {
+                    checkbox.checked = true;
+                }
+            });
+
+            // After loading all stored states, check the card highlight status for all items
+            allItems.forEach(updateCardStatus);
+
+
+            /**
+             * 2. Add event listener to save/remove state and update card status when a checkbox is changed.
+             */
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (event) => {
+                    const itemId = event.target.id;
+                    const parentCard = event.target.closest('.collection-item');
+                    
+                    if (event.target.checked) {
+                        localStorage.setItem(itemId, 'collected');
+                    } else {
+                        localStorage.removeItem(itemId); 
+                    }
+                    
+                    // Update the card's visual status (highlighting)
+                    updateCardStatus(parentCard);
+                });
+            });
+        });
+    </script>
+
+
 </script>
 
 
