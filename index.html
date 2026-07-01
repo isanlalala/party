@@ -8,21 +8,21 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { --primary: #6366f1; --bg: #f8fafc; --card: #ffffff; }
+        :root { --primary: #c084fc; --bg: #faf5ff; --card: #ffffff; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .container.fullscreen { max-width: 100%; padding: 0; border-radius: 0; box-shadow: none; height: 100vh; background: #000; }
-        h1, h2 { text-align: center; color: #1e293b; }
-        .section { margin-bottom: 30px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; }
+        h1, h2 { text-align: center; color: #9333ea; }
+        .section { margin-bottom: 30px; border-bottom: 1px solid #ede9fe; padding-bottom: 20px; }
         .btn-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 10px 0; }
         button { padding: 10px 16px; border: none; border-radius: 6px; background: var(--primary); color: white; cursor: pointer; transition: 0.2s; font-weight: 600; }
         button:hover { opacity: 0.9; transform: translateY(-1px); }
-        button.secondary { background: #64748b; }
+        button.secondary { background: #a78bfa; }
         button.win-btn { background: #22c55e; width: 100%; margin-top: 10px; }
         input { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 80px; text-align: center; }
-        .display-box { background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 10px; font-family: monospace; min-height: 50px; }
+        .display-box { background: #f3e8ff; padding: 15px; border-radius: 8px; margin-top: 10px; font-family: monospace; min-height: 50px; }
         .dashboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .dashboard-table th, .dashboard-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
+        .dashboard-table th, .dashboard-table td { border: 1px solid #ede9fe; padding: 8px; text-align: left; }
         .hidden { display: none; }
 
 		/* Word Display Container */
@@ -47,28 +47,35 @@
 			height: 100%;
 			justify-content: space-between;
 			padding: 20px;
+			background: #000;
+			color: white;
 		}
 
 		.container.fullscreen #word-display {
 			flex: 1;
 			font-size: 4rem;
 			margin: 40px 0;
+			color: white;
+			background: #000;
 		}
 
 		.container.fullscreen .display-word {
 			font-size: 7rem;
 			line-height: 1;
 			margin-bottom: 20px;
+			color: white;
 		}
 
 		.container.fullscreen .display-translation {
 			font-size: 3rem;
 			margin: 20px 0;
+			color: white;
 		}
 
 		.container.fullscreen .display-category {
 			font-size: 1.5rem;
 			margin-top: 40px;
+			color: rgba(255, 255, 255, 0.7);
 		}
 
 		.container.fullscreen .game-controls {
@@ -86,6 +93,30 @@
 
 		.container.fullscreen #game-lobby {
 			color: white;
+			background: #000;
+			padding: 30px;
+		}
+
+		.container.fullscreen #game-lobby label {
+			color: white;
+		}
+
+		.container.fullscreen #category-checklist {
+			background: #1a1a1a !important;
+			border-color: #666 !important;
+			color: white;
+		}
+
+		.container.fullscreen #category-checklist label {
+			color: white !important;
+		}
+
+		.container.fullscreen #category-checklist input[type="checkbox"] {
+			cursor: pointer;
+		}
+
+		.container.fullscreen #category-items label {
+			color: white !important;
 		}
 
 		.container.fullscreen #game-lobby button {
@@ -100,11 +131,13 @@
 			justify-content: space-between;
 			align-items: center;
 			margin-bottom: 20px;
+			background: #000;
 		}
 
 		.container.fullscreen .game-header span {
 			font-size: 2rem;
 			font-weight: bold;
+			color: white;
 		}
 
 		/* Welcome Screen */
@@ -137,12 +170,12 @@
 		}
 
 		#welcome-screen .bigtv-btn {
-			background: #db2777;
+			background: #a78bfa;
 			font-size: 1.3rem;
 		}
 
 		#welcome-screen .team-btn {
-			background: #6366f1;
+			background: #c084fc;
 		}
 
 		/* The Success Flash */
@@ -173,8 +206,7 @@
 <div class="container" id="main-container">
     <!-- Welcome Screen -->
     <div id="welcome-screen" style="display: none;">
-        <h1>🎉 Party Pro</h1>
-        <p style="font-size: 1.2rem; text-align: center; color: #64748b;">Choose a game mode:</p>
+        <h1>🍶🪓殺紅了眼⚡🍑</h1>
         <div class="welcome-buttons">
             <button class="bigtv-btn" onclick="startBigTVMode()">📺 大電視 (Big Screen)</button>
             <button class="team-btn" onclick="startTeamMode()">⚔️ Team Assignment</button>
@@ -184,7 +216,7 @@
     <!-- Regular Navigation (hidden in fullscreen mode) -->
     <div id="nav-bar" class="btn-group" style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
         <button class="secondary" onclick="showView('setup')">🏠 Assignment</button>
-        <button style="background: #db2777; color: white;" onclick="showView('bigtv')">📺 大電視</button>
+        <button style="background: #c084fc; color: white;" onclick="showView('bigtv')">📺 大電視</button>
         <button class="secondary" onclick="showStatsPage()">📊 Stats</button>
     </div>
 
@@ -238,14 +270,13 @@
 
     <div id="view-bigtv" class="view hidden">
         <div class="section" style="text-align: center;">
-            <h2 style="color: #db2777;">📺 大電視</h2>
+            <h2 style="color: #a855f7;">📺 大電視</h2>
             
             <div id="game-lobby">
-                <button class="back-btn" onclick="exitBigTV()">← Back to Menu</button>
-                <div style="background: #fff1f2; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #fda4af; text-align: left;">
-                    
+                <div style="background: #f3e8ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ddd6fe; text-align: left;">
+
                     <label style="display: block; font-weight: bold; margin-bottom: 5px;">📁 Select Categories:</label>
-                    <div id="category-checklist" style="max-height: 150px; overflow-y: auto; background: white; border: 1px solid #db2777; border-radius: 5px; padding: 10px; margin-bottom: 15px;">
+                    <div id="category-checklist" style="max-height: 150px; overflow-y: auto; background: white; border: 1px solid #c084fc; border-radius: 5px; padding: 10px; margin-bottom: 15px;">
 					<label style="display: block; font-weight: bold; cursor: pointer;">
 						<input type="checkbox" id="check-all" onchange="toggleAllCats(this.checked)" checked> (Select / Deselect All)
 					</label>
@@ -265,7 +296,7 @@
                         </div>
                     </div>
                 </div>
-                <button onclick="startBigTV()" style="font-size: 1.2em; padding: 15px 30px; background: #db2777; width: 100%;">START GAME</button>
+                <button onclick="startBigTV()" style="font-size: 1.2em; padding: 15px 30px; background: #a855f7; width: 100%;">START GAME</button>
             </div>
 
             <div id="game-active" class="hidden">
@@ -484,11 +515,11 @@
 			</tr>`;
 		});
 
-		fullHtml += `<div style="margin-bottom:30px; border:2px solid #4f46e5; border-radius:12px; background:linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); overflow:hidden;">
-			<div style="background:rgba(0,0,0,0.2); color:white; padding:15px; font-weight:bold; font-size:1.2em;">🏆 Overall Stats</div>
+		fullHtml += `<div style="margin-bottom:30px; border:2px solid #c084fc; border-radius:12px; background:linear-gradient(135deg, #c084fc 0%, #d8b4fe 100%); overflow:hidden;">
+			<div style="background:rgba(0,0,0,0.1); color:white; padding:15px; font-weight:bold; font-size:1.2em;">🏆 Overall Stats</div>
 			<div style="background:white;">
 				<table style="width:100%; border-collapse:collapse; text-align:left;">
-					<thead style="background:#f8fafc;"><tr><th style="padding:10px;">Player</th><th style="padding:10px;">Rate</th><th style="padding:10px;">W/L</th></tr></thead>
+					<thead style="background:#f3e8ff;"><tr><th style="padding:10px;">Player</th><th style="padding:10px;">Rate</th><th style="padding:10px;">W/L</th></tr></thead>
 					<tbody>${overallTableRows}</tbody>
 				</table>
 			</div>
@@ -525,10 +556,10 @@
 					</tr>`;
 				}
 
-				fullHtml += `<div style="margin-bottom:20px; border:1px solid #e2e8f0; border-radius:12px; background:white; overflow:hidden;">
-					<div style="background:#4f46e5; color:white; padding:12px 15px; font-weight:bold; font-size:1.1em;">📅 ${dateKey}</div>
+				fullHtml += `<div style="margin-bottom:20px; border:1px solid #ede9fe; border-radius:12px; background:white; overflow:hidden;">
+					<div style="background:#a855f7; color:white; padding:12px 15px; font-weight:bold; font-size:1.1em;">📅 ${dateKey}</div>
 					<table style="width:100%; border-collapse:collapse; text-align:left;">
-						<thead style="background:#f8fafc;"><tr><th style="padding:10px;">Player</th><th style="padding:10px;">Rate</th><th style="padding:10px;">W/L</th></tr></thead>
+						<thead style="background:#f3e8ff;"><tr><th style="padding:10px;">Player</th><th style="padding:10px;">Rate</th><th style="padding:10px;">W/L</th></tr></thead>
 						<tbody>${tableRows}</tbody>
 					</table>
 				</div>`;
@@ -682,9 +713,9 @@
 	window.setTime = function(seconds) {
 		selectedDuration = seconds;
 		// UI Feedback: Reset colors and highlight active
-		document.querySelectorAll('.time-opt').forEach(btn => btn.style.background = '#64748b');
+		document.querySelectorAll('.time-opt').forEach(btn => btn.style.background = '#a78bfa');
 		const activeBtn = document.getElementById('t' + seconds);
-		if(activeBtn) activeBtn.style.background = '#db2777';
+		if(activeBtn) activeBtn.style.background = '#d8b4fe';
 	};
 
 	// 2. LOAD WORDS & POPULATE CATEGORIES
