@@ -92,23 +92,24 @@
 		}
 
 		.container.fullscreen #game-lobby {
-			color: white;
-			background: #000;
+			color: #333;
+			background: white;
 			padding: 30px;
+			border-radius: 12px;
 		}
 
 		.container.fullscreen #game-lobby label {
-			color: white;
+			color: #333;
 		}
 
 		.container.fullscreen #category-checklist {
-			background: #1a1a1a !important;
-			border-color: #666 !important;
-			color: white;
+			background: #fff !important;
+			border-color: #c084fc !important;
+			color: #333;
 		}
 
 		.container.fullscreen #category-checklist label {
-			color: white !important;
+			color: #333 !important;
 		}
 
 		.container.fullscreen #category-checklist input[type="checkbox"] {
@@ -116,12 +117,23 @@
 		}
 
 		.container.fullscreen #category-items label {
-			color: white !important;
+			color: #333 !important;
 		}
 
 		.container.fullscreen #game-lobby button {
 			padding: 20px 40px;
 			font-size: 1.2rem;
+		}
+
+		.container.fullscreen .section {
+			background: white;
+			padding: 30px;
+			border-radius: 12px;
+			border: none;
+		}
+
+		.container.fullscreen h2 {
+			color: #9333ea;
 		}
 
 		.container.fullscreen .game-header {
@@ -704,6 +716,7 @@
 	 // --- 6. BIG TV (大電視) ENGINE ---
 	let gameWords = [];
 	let filteredWords = [];
+	let shownWordsInRound = []; // Track shown words to avoid repeats
 	let gameScore = 0;
 	let timeLeft = 60;
 	let gameInterval;
@@ -766,12 +779,13 @@
 		// UI Switch
 		document.getElementById('game-lobby').classList.add('hidden');
 		document.getElementById('game-active').classList.remove('hidden');
-		
+
 		gameScore = 0;
 		timeLeft = selectedDuration;
+		shownWordsInRound = []; // Reset shown words for new game
 		document.getElementById('score').innerText = gameScore;
 		document.getElementById('timer').innerText = timeLeft;
-		
+
 		updateWord();
 
 		if (gameInterval) clearInterval(gameInterval);
@@ -782,16 +796,25 @@
 		}, 1000);
 	};
 
-	// 4. UPDATE WORD (Randomly picks from filtered list)
+	// 4. UPDATE WORD (Randomly picks from filtered list, no repeats in same round)
 	window.updateWord = function() {
-		if (filteredWords.length > 0) {
-			const item = filteredWords[Math.floor(Math.random() * filteredWords.length)];
-			document.getElementById('word-display').innerHTML = `
-				<div class="display-word">${item.word}</div>
-				<div class="display-translation">${item.translation || ''}</div>
-				<div class="display-category">${item.category || ''}</div>
-			`;
+		// Get available words (not yet shown in this round)
+		const availableWords = filteredWords.filter(w => !shownWordsInRound.includes(w.word));
+
+		if (availableWords.length === 0) {
+			// If all words shown, reset and continue
+			shownWordsInRound = [];
+			return updateWord();
 		}
+
+		const item = availableWords[Math.floor(Math.random() * availableWords.length)];
+		shownWordsInRound.push(item.word); // Mark word as shown
+
+		document.getElementById('word-display').innerHTML = `
+			<div class="display-word">${item.word}</div>
+			<div class="display-translation">${item.translation || ''}</div>
+			<div class="display-category">${item.category || ''}</div>
+		`;
 	};
 
 	// 5. NEXT WORD (Handles score and effects)
