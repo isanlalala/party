@@ -303,8 +303,14 @@
                             <button class="secondary time-opt" onclick="setTime(10)" id="t10">10s</button>
                             <button class="secondary time-opt" onclick="setTime(90)" id="t90">90s</button>
                             <button class="secondary time-opt" onclick="setTime(120)" id="t120">120s</button>
+                            <button class="secondary time-opt" onclick="setTime(180)" id="t180">180s</button>
 							<button class="secondary time-opt" onclick="setTime(300)" id="t300">300s</button>
 							<button class="secondary time-opt" onclick="setTime(600)" id="t600">600s</button>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                            <label style="font-weight: bold; font-size: 0.9em;">Custom:</label>
+                            <input type="number" id="custom-time" min="5" max="3600" placeholder="seconds" style="flex: 1; padding: 8px;">
+                            <button onclick="setTime(parseInt(document.getElementById('custom-time').value) || 60)" style="background: #c084fc; padding: 8px 15px; font-size: 0.9em;">Set</button>
                         </div>
                     </div>
                 </div>
@@ -729,6 +735,8 @@
 		document.querySelectorAll('.time-opt').forEach(btn => btn.style.background = '#a78bfa');
 		const activeBtn = document.getElementById('t' + seconds);
 		if(activeBtn) activeBtn.style.background = '#d8b4fe';
+		// Clear custom input when preset is selected
+		document.getElementById('custom-time').value = '';
 	};
 
 	// 2. LOAD WORDS & POPULATE CATEGORIES
