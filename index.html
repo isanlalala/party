@@ -406,7 +406,7 @@
     <div id="view-game-results" class="view hidden">
         <div class="section" style="margin-bottom: 0;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">📋 Last Game Results</h2>
+                <h2 style="margin: 0;">📺 大電視 Results</h2>
                 <button class="secondary" onclick="showView('setup')" style="padding: 8px 12px; font-size: 0.9em;">← Back</button>
             </div>
 
@@ -440,7 +440,6 @@
     window.showView = function(viewName) {
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
         document.getElementById('view-' + viewName).classList.remove('hidden');
-        document.getElementById('dashboard').classList.add('hidden'); // Hide stats when switching
     };
 
 	// --- MODE SELECTION ---
@@ -798,50 +797,61 @@
     };
 
     window.displayGameResults = function() {
+        console.log("displayGameResults called, lastGameResults:", lastGameResults);
+
         if (!lastGameResults) {
             document.getElementById('game-summary').innerHTML = "No game results yet";
             document.getElementById('game-words-list').innerHTML = "<p style='text-align: center; color: #64748b;'>No game results yet</p>";
             return;
         }
 
-        const { score, duration, totalWords, correctCount, skippedCount, words } = lastGameResults;
+        try {
+            const { score, duration, totalWords, correctCount, skippedCount, words } = lastGameResults;
 
-        // Display summary
-        document.getElementById('game-summary').innerHTML = `
-            Score: <strong>${score}</strong> |
-            Correct: <strong style="color: #22c55e;">${correctCount}/${totalWords}</strong> |
-            Skipped: <strong style="color: #f59e0b;">${skippedCount}</strong> |
-            Time: <strong>${duration}s</strong>
-        `;
+            // Display summary
+            document.getElementById('game-summary').innerHTML = `
+                Score: <strong>${score}</strong> |
+                Correct: <strong style="color: #22c55e;">${correctCount}/${totalWords}</strong> |
+                Skipped: <strong style="color: #f59e0b;">${skippedCount}</strong> |
+                Time: <strong>${duration}s</strong>
+            `;
 
-        // Display words table
-        let tableHtml = `<table style="width: 100%; border-collapse: collapse;">
-            <thead style="background: #f3e8ff; position: sticky; top: 0;">
-                <tr>
-                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">#</th>
-                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Word</th>
-                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Translation</th>
-                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Result</th>
-                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Category</th>
-                </tr>
-            </thead>
-            <tbody>`;
+            // Display words table
+            let tableHtml = `<table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: #f3e8ff; position: sticky; top: 0;">
+                    <tr>
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">#</th>
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Word</th>
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Translation</th>
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Result</th>
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Category</th>
+                    </tr>
+                </thead>
+                <tbody>`;
 
-        words.forEach(w => {
-            const resultEmoji = w.result === 'correct' ? '✅ Correct' : '⊘ Skipped';
-            const resultColor = w.result === 'correct' ? '#22c55e' : '#f59e0b';
+            if (words && words.length > 0) {
+                words.forEach(w => {
+                    const resultEmoji = w.result === 'correct' ? '✅ Correct' : '⊘ Skipped';
+                    const resultColor = w.result === 'correct' ? '#22c55e' : '#f59e0b';
 
-            tableHtml += `<tr style="border-bottom: 1px solid #ede9fe;">
-                <td style="padding: 10px;"><strong>${w.order}</strong></td>
-                <td style="padding: 10px; font-weight: bold;">${w.word}</td>
-                <td style="padding: 10px;">${w.translation}</td>
-                <td style="padding: 10px; color: ${resultColor}; font-weight: bold;">${resultEmoji}</td>
-                <td style="padding: 10px; font-size: 0.9em; color: #999;">${w.category}</td>
-            </tr>`;
-        });
+                    tableHtml += `<tr style="border-bottom: 1px solid #ede9fe;">
+                        <td style="padding: 10px;"><strong>${w.order}</strong></td>
+                        <td style="padding: 10px; font-weight: bold;">${w.word}</td>
+                        <td style="padding: 10px;">${w.translation}</td>
+                        <td style="padding: 10px; color: ${resultColor}; font-weight: bold;">${resultEmoji}</td>
+                        <td style="padding: 10px; font-size: 0.9em; color: #999;">${w.category}</td>
+                    </tr>`;
+                });
+            } else {
+                tableHtml += `<tr><td colspan="5" style="padding: 20px; text-align: center;">No words played</td></tr>`;
+            }
 
-        tableHtml += `</tbody></table>`;
-        document.getElementById('game-words-list').innerHTML = tableHtml;
+            tableHtml += `</tbody></table>`;
+            document.getElementById('game-words-list').innerHTML = tableHtml;
+        } catch (e) {
+            console.error("Error in displayGameResults:", e);
+            document.getElementById('game-words-list').innerHTML = "<p style='color: red;'>Error loading results: " + e.message + "</p>";
+        }
     };
 
 	 // --- 6. BIG TV (大電視) ENGINE ---
