@@ -320,8 +320,11 @@
 
     <div id="view-bigtv" class="view hidden">
         <div class="section" style="text-align: center;">
-            <h2 style="color: #a855f7;">📺 大電視</h2>
-            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #a855f7;">📺 大電視</h2>
+                <button class="secondary" onclick="exitBigTVMode()" style="padding: 8px 12px; font-size: 0.9em;">← Back</button>
+            </div>
+
             <div id="game-lobby">
                 <div style="background: #f3e8ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ddd6fe; text-align: left; width: 100%; box-sizing: border-box;">
 
@@ -354,29 +357,31 @@
                 </div>
                 <button onclick="startBigTV()" style="font-size: 1.2em; padding: 15px 30px; background: #a855f7; width: 100%;">START GAME</button>
             </div>
+        </div>
+    </div>
 
-            <div id="game-active" class="hidden">
-                <button class="back-btn" onclick="exitBigTV()">← Back to Menu</button>
+    <div id="view-bigtv-play" class="view hidden">
+        <div id="game-active">
+            <button class="back-btn" onclick="exitBigTV()">← Back to Menu</button>
 
-                <div id="game-playing" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
-                    <div class="game-header">
-                        <div>⏱️ <span id="timer">60</span>s</div>
-                        <div>Score: <span id="score">0</span></div>
-                        <button onclick="endGame(true)" style="background: #ef4444; padding: 8px 15px; font-size: 0.9em;">Stop Game</button>
-                    </div>
-                    <div id="word-display">LOADING...</div>
-                    <div class="game-controls">
-                        <button onclick="nextWord(false)" style="background:#64748b; flex:1;">SKIP ⊘</button>
-                        <button onclick="nextWord(true)" style="background:#22c55e; flex:2;">CORRECT ✅</button>
-                    </div>
+            <div id="game-playing" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
+                <div class="game-header">
+                    <div>⏱️ <span id="timer">60</span>s</div>
+                    <div>Score: <span id="score">0</span></div>
+                    <button onclick="endGame(true)" style="background: #ef4444; padding: 8px 15px; font-size: 0.9em;">Stop Game</button>
                 </div>
-
-                <div id="game-over" style="display: none; flex-direction: column; height: 100%; justify-content: center; align-items: center; text-align: center; gap: 20px;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: #a855f7;">🎮 GAME OVER!</div>
-                    <div style="font-size: 2rem; font-weight: bold;">Final Score: <span id="final-score">0</span></div>
-                    <button onclick="showGameResults()" style="background: #a78bfa; color: white; padding: 15px 30px; font-size: 1rem; border-radius: 8px;">📺 View 大電視 Results</button>
-                    <button onclick="exitBigTV()" style="background: #64748b; color: white; padding: 12px 25px; font-size: 0.95rem; border-radius: 8px;">Back to Menu</button>
+                <div id="word-display">LOADING...</div>
+                <div class="game-controls">
+                    <button onclick="nextWord(false)" style="background:#64748b; flex:1;">SKIP ⊘</button>
+                    <button onclick="nextWord(true)" style="background:#22c55e; flex:2;">CORRECT ✅</button>
                 </div>
+            </div>
+
+            <div id="game-over" style="display: none; flex-direction: column; height: 100%; justify-content: center; align-items: center; text-align: center; gap: 20px;">
+                <div style="font-size: 1.5rem; font-weight: bold; color: #a855f7;">🎮 GAME OVER!</div>
+                <div style="font-size: 2rem; font-weight: bold;">Final Score: <span id="final-score">0</span></div>
+                <button onclick="showGameResults()" style="background: #a78bfa; color: white; padding: 15px 30px; font-size: 1rem; border-radius: 8px;">📺 View 大電視 Results</button>
+                <button onclick="exitBigTV()" style="background: #64748b; color: white; padding: 12px 25px; font-size: 0.95rem; border-radius: 8px;">Back to Menu</button>
             </div>
         </div>
     </div>
@@ -477,7 +482,7 @@
 		showView('setup');
 	};
 
-	window.exitBigTV = function() {
+	window.exitBigTVMode = function() {
 		clearInterval(gameInterval);
 		document.getElementById('main-container').classList.remove('fullscreen');
 		document.body.style.padding = '20px';
@@ -488,6 +493,15 @@
 		// Reset game screens
 		document.getElementById('game-playing').style.display = 'flex';
 		document.getElementById('game-over').style.display = 'none';
+	};
+
+	window.exitBigTV = function() {
+		clearInterval(gameInterval);
+		// Reset game screens
+		document.getElementById('game-playing').style.display = 'flex';
+		document.getElementById('game-over').style.display = 'none';
+		// Go back to category selection
+		showView('bigtv');
 	};
 
 	// --- STATS PAGE FUNCTIONS ---
@@ -911,7 +925,7 @@
 	// 3. START GAME (Merged version)
 	window.startBigTV = async function() {
 		if (gameWords.length === 0) await loadWords();
-		
+
 		// Get all checked categories
 		const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(cb => cb.value);
 
@@ -922,9 +936,8 @@
 
 		if (filteredWords.length === 0) return alert("No words found in these categories!");
 
-		// UI Switch
-		document.getElementById('game-lobby').classList.add('hidden');
-		document.getElementById('game-active').classList.remove('hidden');
+		// Switch to game view
+		showView('bigtv-play');
 
 		gameScore = 0;
 		timeLeft = selectedDuration;
