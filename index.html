@@ -315,10 +315,6 @@
                 <button class="win-btn" onclick="recordWin(1)">Team 1 Won!</button>
                 <button class="win-btn" onclick="recordWin(2)">Team 2 Won!</button>
             </div>
-
-            <div style="margin-top: 15px;">
-                <button onclick="showGameResults()" style="background: #a78bfa; color: white; width: 100%; padding: 12px;">📋 View Last Game Results</button>
-            </div>
         </div>
     </div>
 
@@ -332,7 +328,7 @@
                     <label style="display: block; font-weight: bold; margin-bottom: 5px;">📁 Select Categories:</label>
                     <div id="category-checklist" style="max-height: 150px; overflow-y: auto; background: white; border: 1px solid #c084fc; border-radius: 5px; padding: 10px; margin-bottom: 15px;">
 					<label style="display: block; font-weight: bold; cursor: pointer;">
-						<input type="checkbox" id="check-all" onchange="toggleAllCats(this.checked)" checked> (Select / Deselect All)
+						<input type="checkbox" id="check-all" onchange="toggleAllCats(this.checked)" checked> (Select All)
 					</label>
 					<hr style="margin: 8px 0; border: 0; border-top: 1px solid #eee;">
 					<div id="category-items">
@@ -361,15 +357,25 @@
 
             <div id="game-active" class="hidden">
                 <button class="back-btn" onclick="exitBigTV()">← Back to Menu</button>
-                <div class="game-header">
-                    <div>⏱️ <span id="timer">60</span>s</div>
-                    <div>Score: <span id="score">0</span></div>
-                    <button onclick="endGame(true)" style="background: #ef4444; padding: 8px 15px; font-size: 0.9em;">Stop Game</button>
+
+                <div id="game-playing" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
+                    <div class="game-header">
+                        <div>⏱️ <span id="timer">60</span>s</div>
+                        <div>Score: <span id="score">0</span></div>
+                        <button onclick="endGame(true)" style="background: #ef4444; padding: 8px 15px; font-size: 0.9em;">Stop Game</button>
+                    </div>
+                    <div id="word-display">LOADING...</div>
+                    <div class="game-controls">
+                        <button onclick="nextWord(false)" style="background:#64748b; flex:1;">SKIP ⊘</button>
+                        <button onclick="nextWord(true)" style="background:#22c55e; flex:2;">CORRECT ✅</button>
+                    </div>
                 </div>
-                <div id="word-display">LOADING...</div>
-                <div class="game-controls">
-                    <button onclick="nextWord(false)" style="background:#64748b; flex:1;">SKIP ⊘</button>
-                    <button onclick="nextWord(true)" style="background:#22c55e; flex:2;">CORRECT ✅</button>
+
+                <div id="game-over" style="display: none; flex-direction: column; height: 100%; justify-content: center; align-items: center; text-align: center; gap: 20px;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #a855f7;">🎮 GAME OVER!</div>
+                    <div style="font-size: 2rem; font-weight: bold;">Final Score: <span id="final-score">0</span></div>
+                    <button onclick="showGameResults()" style="background: #a78bfa; color: white; padding: 15px 30px; font-size: 1rem; border-radius: 8px;">📺 View 大電視 Results</button>
+                    <button onclick="exitBigTV()" style="background: #64748b; color: white; padding: 12px 25px; font-size: 0.95rem; border-radius: 8px;">Back to Menu</button>
                 </div>
             </div>
         </div>
@@ -480,6 +486,9 @@
 		document.getElementById('welcome-screen').style.display = 'flex';
 		document.getElementById('nav-bar').style.display = 'flex';
 		document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+		// Reset game screens
+		document.getElementById('game-playing').style.display = 'flex';
+		document.getElementById('game-over').style.display = 'none';
 	};
 
 	// --- STATS PAGE FUNCTIONS ---
@@ -994,9 +1003,10 @@
         words: [...gameHistory]
     };
 
-    alert("GAME OVER! Final Score: " + gameScore);
-    document.getElementById('game-lobby').classList.remove('hidden');
-    document.getElementById('game-active').classList.add('hidden');
+    // Show game-over screen
+    document.getElementById('game-playing').style.display = 'none';
+    document.getElementById('game-over').style.display = 'flex';
+    document.getElementById('final-score').innerText = gameScore;
 };
 	window.toggleAllCats = function(checked) {
     // Select all checkboxes inside the category-items list
