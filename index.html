@@ -96,10 +96,11 @@
 			background: white;
 			padding: 20px !important;
 			border-radius: 12px;
-			margin: 10px;
+			margin: 10px 0;
 			max-height: 90vh;
 			overflow-y: auto;
-			width: calc(100% - 20px);
+			width: 100%;
+			box-sizing: border-box;
 		}
 
 		.container.fullscreen #game-lobby label {
@@ -270,17 +271,20 @@
         <div class="section">
             <h2>🪑 Quick Seat Draw</h2>
             <div class="btn-group">
-                <button class="secondary" onclick="initSeatDraw(2)">2</button>
                 <button class="secondary" onclick="initSeatDraw(3)">3</button>
                 <button class="secondary" onclick="initSeatDraw(4)">4</button>
                 <button class="secondary" onclick="initSeatDraw(5)">5</button>
                 <button class="secondary" onclick="initSeatDraw(6)">6</button>
                 <button class="secondary" onclick="initSeatDraw(7)">7</button>
                 <button class="secondary" onclick="initSeatDraw(8)">8</button>
-                <button class="secondary" onclick="initSeatDraw(9)">9</button>
-                <button class="secondary" onclick="initSeatDraw(10)">10</button>
             </div>
-            
+
+            <div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                <label style="font-weight: bold; font-size: 0.9em;">Custom:</label>
+                <input type="number" id="custom-players" min="2" max="20" placeholder="players" style="flex: 1; padding: 8px;">
+                <button class="secondary" onclick="initSeatDraw(parseInt(document.getElementById('custom-players').value) || 5)" style="padding: 8px 15px; font-size: 0.9em;">Go</button>
+            </div>
+
             <div id="seatActionArea" class="hidden" style="text-align: center; margin-top: 15px;">
                 <button onclick="drawNextSeat()" id="drawBtn">What's my seat?</button>
                 <div class="display-box" id="seatDisplay">Select players above</div>
@@ -310,6 +314,10 @@
             <div id="winButtons" class="hidden" style="margin-top: 10px;">
                 <button class="win-btn" onclick="recordWin(1)">Team 1 Won!</button>
                 <button class="win-btn" onclick="recordWin(2)">Team 2 Won!</button>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button onclick="showGameResults()" style="background: #a78bfa; color: white; width: 100%; padding: 12px;">📋 View Last Game Results</button>
             </div>
         </div>
     </div>
@@ -385,6 +393,23 @@
 
             <div id="statsContent" style="min-height: 300px;">
                 <p style="text-align: center; color: #64748b;">⌛ Loading stats...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-game-results" class="view hidden">
+        <div class="section" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">📋 Last Game Results</h2>
+                <button class="secondary" onclick="showView('setup')" style="padding: 8px 12px; font-size: 0.9em;">← Back</button>
+            </div>
+
+            <div id="game-summary" style="background: #f3e8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
+                Loading results...
+            </div>
+
+            <div id="game-words-list" style="min-height: 300px;">
+                <p style="text-align: center; color: #64748b;">No game results yet</p>
             </div>
         </div>
     </div>
@@ -753,6 +778,63 @@
         showStatsPage();
     };
 
+    // --- GAME RESULTS PAGE ---
+    window.showGameResults = function() {
+        if (!lastGameResults) {
+            alert("No game results yet. Play a game first!");
+            return;
+        }
+        showView('game-results');
+        displayGameResults();
+    };
+
+    window.displayGameResults = function() {
+        if (!lastGameResults) {
+            document.getElementById('game-summary').innerHTML = "No game results yet";
+            document.getElementById('game-words-list').innerHTML = "<p style='text-align: center; color: #64748b;'>No game results yet</p>";
+            return;
+        }
+
+        const { score, duration, totalWords, correctCount, skippedCount, words } = lastGameResults;
+
+        // Display summary
+        document.getElementById('game-summary').innerHTML = `
+            Score: <strong>${score}</strong> |
+            Correct: <strong style="color: #22c55e;">${correctCount}/${totalWords}</strong> |
+            Skipped: <strong style="color: #f59e0b;">${skippedCount}</strong> |
+            Time: <strong>${duration}s</strong>
+        `;
+
+        // Display words table
+        let tableHtml = `<table style="width: 100%; border-collapse: collapse;">
+            <thead style="background: #f3e8ff; position: sticky; top: 0;">
+                <tr>
+                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">#</th>
+                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Word</th>
+                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Translation</th>
+                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Result</th>
+                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Category</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        words.forEach(w => {
+            const resultEmoji = w.result === 'correct' ? '✅ Correct' : '⊘ Skipped';
+            const resultColor = w.result === 'correct' ? '#22c55e' : '#f59e0b';
+
+            tableHtml += `<tr style="border-bottom: 1px solid #ede9fe;">
+                <td style="padding: 10px;"><strong>${w.order}</strong></td>
+                <td style="padding: 10px; font-weight: bold;">${w.word}</td>
+                <td style="padding: 10px;">${w.translation}</td>
+                <td style="padding: 10px; color: ${resultColor}; font-weight: bold;">${resultEmoji}</td>
+                <td style="padding: 10px; font-size: 0.9em; color: #999;">${w.category}</td>
+            </tr>`;
+        });
+
+        tableHtml += `</tbody></table>`;
+        document.getElementById('game-words-list').innerHTML = tableHtml;
+    };
+
 	 // --- 6. BIG TV (大電視) ENGINE ---
 	let gameWords = [];
 	let filteredWords = [];
@@ -761,6 +843,9 @@
 	let timeLeft = 60;
 	let gameInterval;
 	let selectedDuration = 60; // Default time
+	let gameHistory = []; // Track played words for results
+	let currentWordItem = null; // Current word being displayed
+	let lastGameResults = null; // Last game results summary
 
 	// 1. SET TIME (Called by buttons t60, t90, t120)
 	window.setTime = function(seconds) {
@@ -825,6 +910,7 @@
 		gameScore = 0;
 		timeLeft = selectedDuration;
 		shownWordsInRound = []; // Reset shown words for new game
+		gameHistory = []; // Reset game history
 		document.getElementById('score').innerText = gameScore;
 		document.getElementById('timer').innerText = timeLeft;
 
@@ -850,6 +936,7 @@
 		}
 
 		const item = availableWords[Math.floor(Math.random() * availableWords.length)];
+		currentWordItem = item; // Store current word for tracking
 		shownWordsInRound.push(item.word); // Mark word as shown
 
 		document.getElementById('word-display').innerHTML = `
@@ -861,6 +948,17 @@
 
 	// 5. NEXT WORD (Handles score and effects)
 	window.nextWord = function(isCorrect) {
+		// Track word result in game history
+		if (currentWordItem) {
+			gameHistory.push({
+				word: currentWordItem.word,
+				category: currentWordItem.category,
+				translation: currentWordItem.translation,
+				result: isCorrect ? 'correct' : 'skipped',
+				order: gameHistory.length + 1
+			});
+		}
+
 		const display = document.getElementById('word-display');
 		if (isCorrect) {
 			gameScore++;
@@ -885,6 +983,17 @@
             return;
         }
     }
+
+    // Save game results before clearing
+    lastGameResults = {
+        score: gameScore,
+        duration: selectedDuration - timeLeft,
+        totalWords: gameHistory.length,
+        correctCount: gameHistory.filter(w => w.result === 'correct').length,
+        skippedCount: gameHistory.filter(w => w.result === 'skipped').length,
+        words: [...gameHistory]
+    };
+
     alert("GAME OVER! Final Score: " + gameScore);
     document.getElementById('game-lobby').classList.remove('hidden');
     document.getElementById('game-active').classList.add('hidden');
