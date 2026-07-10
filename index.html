@@ -254,17 +254,13 @@
     <!-- Welcome Screen -->
     <div id="welcome-screen" style="display: none;">
         <h1>🍶🪓殺紅了眼⚡🍑</h1>
-        <div class="welcome-buttons">
-            <button class="bigtv-btn" onclick="startBigTVMode()">📺 大電視 (Big Screen)</button>
-            <button class="team-btn" onclick="startTeamMode()">⚔️ Team Assignment</button>
-        </div>
     </div>
 
     <!-- Regular Navigation (hidden in fullscreen mode) -->
-    <div id="nav-bar" class="btn-group" style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-        <button class="secondary" onclick="showView('setup')">🏠 Assignment</button>
-        <button style="background: #c084fc; color: white;" onclick="showView('bigtv')">📺 大電視</button>
-        <button class="secondary" onclick="showStatsPage()">📊 Stats</button>
+    <div id="nav-bar" class="btn-group" style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; gap: 12px;">
+        <button class="secondary" onclick="showView('setup')" style="flex: 1; padding: 15px 20px; font-size: 1.1em; font-weight: 600;">🗡️ Team</button>
+        <button style="background: #c084fc; color: white; flex: 1; padding: 15px 20px; font-size: 1.1em; font-weight: 600;" onclick="showView('bigtv')">📺 大電視</button>
+        <button class="secondary" onclick="showStatsPage()" style="flex: 1; padding: 15px 20px; font-size: 1.1em; font-weight: 600;">📊 Stats</button>
     </div>
 
     <div id="view-setup" class="view">
