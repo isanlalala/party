@@ -350,9 +350,8 @@
      TOP STICKY NAV
 ══════════════════════════════ -->
 <nav id="top-nav">
-    <div class="nav-logo">殺紅了眼</div>
     <div class="nav-tabs">
-        <button onclick="showView('home')" id="nav-home">首頁</button>
+        <button onclick="showView('home')" id="nav-home">殺紅了眼</button>
         <button onclick="showView('setup')" id="nav-setup">🗡️ 隊伍</button>
         <button onclick="showView('bigtv')" id="nav-bigtv">📺 大電視</button>
         <button onclick="showStatsPage()" id="nav-stats">📊 統計</button>
@@ -364,11 +363,11 @@
     <!-- ══ HOME ══ -->
     <div id="view-home" class="view">
         <h1>🍶🪓殺紅了眼⚡🍑</h1>
-        <p style="text-align:center;opacity:0.6;font-size:0.95rem;">朋友聚會遊戲小工具</p>
+        <p style="text-align:center;opacity:0.6;font-size:0.95rem;">遊戲小工具</p>
 
         <div class="home-cta">
             <button class="btn-big btn-yellow btn-wide" onclick="showView('setup')">🗡️ 組隊 & 座位</button>
-            <button class="btn-big btn-sky btn-wide" onclick="showView('bigtv')">📺 大電視猜字</button>
+            <button class="btn-big btn-sky btn-wide" onclick="showView('bigtv')">📺 大電視</button>
             <button class="btn-big btn-wide" onclick="showStatsPage()" style="background:var(--green)">📊 查看統計</button>
         </div>
     </div>
@@ -467,7 +466,7 @@
             </div>
             <div id="start-error" class="hidden" style="background:var(--yellow);border:var(--bw) solid var(--border);border-radius:12px;padding:10px;margin-bottom:10px;font-size:0.9rem;text-align:center;"></div>
 
-            <label style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:6px;">⏱️ 遊戲時間：</label>
+            <label style="font-weight:700;font-size:0.8rem;display:block;margin-bottom:6px;">⏱️ 遊戲時間：</label>
             <div class="btn-group">
                 <button class="time-opt" onclick="setTime(10)"  id="t10">10s</button>
                 <button class="time-opt" onclick="setTime(90)"  id="t90">90s</button>
