@@ -827,7 +827,6 @@
 
     async function loadWords() {
         const orig = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzCZ1TCzstZPFtem7rrT6ZHZM4SXZdeI6r5SJTz32issZ5ZCLiNN9l2PE-MSqVErhyNN0EZxeVud3H/pub?gid=1360810286&single=true&output=csv';
-        // try direct first (works if server sends CORS headers), fallback to proxy
         const urls = [
             'https://corsproxy.io/?' + encodeURIComponent(orig),
             'https://api.allorigins.win/raw?url=' + encodeURIComponent(orig)
@@ -837,7 +836,10 @@
         let lastErr;
         for (const url of urls) {
             try {
-                const res = await fetch(url);
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 8000);
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(timer);
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const text = await res.text();
                 const lines = text.split(/\r?\n/).filter(l=>l.trim());
@@ -871,7 +873,7 @@
 
     function showStartError(msg) {
         const el = document.getElementById('start-error');
-        if (msg) { el.textContent = msg; el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'), 3000); }
+        if (msg) { el.textContent = msg; el.classList.remove('hidden'); }
         else el.classList.add('hidden');
     }
 
@@ -882,6 +884,7 @@
         if (!selectedCats.length) { showStartError('⚠️ 請至少勾選一個類別！'); return; }
         filteredWords = gameWords.filter(w=>selectedCats.includes(w.category));
         if (!filteredWords.length) { showStartError('⚠️ 所選類別沒有字詞！'); return; }
+        showStartError('');
         showView('bigtv-play');
         gameScore=0; timeLeft=selectedDuration; shownWordsInRound=[]; gameHistory=[];
         document.getElementById('score').innerText = 0;
