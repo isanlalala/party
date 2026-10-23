@@ -458,8 +458,14 @@
                 <label class="check-label" style="font-weight:700;border-bottom:1px dashed #ccc;padding-bottom:6px;margin-bottom:6px;">
                     <input type="checkbox" id="check-all" onchange="toggleAllCats(this.checked)" checked>（全選）
                 </label>
-                <div id="category-items"></div>
+                <div id="category-items">
+                    <p id="cat-loading" style="opacity:0.5;padding:6px 0;font-size:0.9rem;">⌛ 載入字庫中…</p>
+                </div>
             </div>
+            <div id="cat-error" class="hidden" style="background:var(--coral);border:var(--bw) solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;font-size:0.9rem;">
+                ⚠️ 字庫載入失敗。<button onclick="retryLoadWords()" style="margin-left:8px;padding:4px 10px;font-size:0.85rem;background:var(--bg);">重試</button>
+            </div>
+            <div id="start-error" class="hidden" style="background:var(--yellow);border:var(--bw) solid var(--border);border-radius:12px;padding:10px;margin-bottom:10px;font-size:0.9rem;text-align:center;"></div>
 
             <label style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:6px;">⏱️ 遊戲時間：</label>
             <div class="btn-group">
@@ -813,34 +819,69 @@
         document.getElementById('custom-time').value = '';
     };
 
+    function showCatError(msg) {
+        const errEl = document.getElementById('cat-error');
+        if (msg) { errEl.querySelector('span') && (errEl.querySelector('span').textContent = msg); errEl.classList.remove('hidden'); }
+        else errEl.classList.add('hidden');
+    }
+
     async function loadWords() {
         const orig = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzCZ1TCzstZPFtem7rrT6ZHZM4SXZdeI6r5SJTz32issZ5ZCLiNN9l2PE-MSqVErhyNN0EZxeVud3H/pub?gid=1360810286&single=true&output=csv';
-        const url = 'https://corsproxy.io/?' + encodeURIComponent(orig);
-        try {
-            const res = await fetch(url);
-            const text = await res.text();
-            const lines = text.split(/\r?\n/).filter(l=>l.trim());
-            gameWords = lines.slice(1).map(l => {
-                const p = l.split(',');
-                return { category: p[0]?.trim()||"General", word: p[1]?.trim()||"", translation: p[2]?.trim()||"" };
-            }).filter(i=>i.word);
-            const container = document.getElementById('category-items');
-            container.innerHTML = '';
-            [...new Set(gameWords.map(i=>i.category))].sort().forEach(cat => {
-                const lbl = document.createElement('label');
-                lbl.className = 'check-label';
-                lbl.innerHTML = `<input type="checkbox" class="cat-check" value="${cat}" checked>${cat}`;
-                container.appendChild(lbl);
-            });
-        } catch(e) { console.error("Load failed", e); }
+        // try direct first (works if server sends CORS headers), fallback to proxy
+        const urls = [
+            'https://corsproxy.io/?' + encodeURIComponent(orig),
+            'https://api.allorigins.win/raw?url=' + encodeURIComponent(orig)
+        ];
+        document.getElementById('cat-error').classList.add('hidden');
+        document.getElementById('cat-loading').style.display = 'block';
+        let lastErr;
+        for (const url of urls) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const text = await res.text();
+                const lines = text.split(/\r?\n/).filter(l=>l.trim());
+                gameWords = lines.slice(1).map(l => {
+                    const p = l.split(',');
+                    return { category: p[0]?.trim()||"General", word: p[1]?.trim()||"", translation: p[2]?.trim()||"" };
+                }).filter(i=>i.word);
+                if (!gameWords.length) throw new Error('空字庫');
+                const container = document.getElementById('category-items');
+                container.innerHTML = '';
+                [...new Set(gameWords.map(i=>i.category))].sort().forEach(cat => {
+                    const lbl = document.createElement('label');
+                    lbl.className = 'check-label';
+                    lbl.innerHTML = `<input type="checkbox" class="cat-check" value="${cat}" checked>${cat}`;
+                    container.appendChild(lbl);
+                });
+                document.getElementById('cat-error').classList.add('hidden');
+                return; // success
+            } catch(e) { lastErr = e; }
+        }
+        // all proxies failed
+        document.getElementById('cat-loading').style.display = 'none';
+        document.getElementById('cat-error').classList.remove('hidden');
+        console.error("Load failed", lastErr);
+    }
+
+    window.retryLoadWords = function() {
+        document.getElementById('cat-error').classList.add('hidden');
+        loadWords();
+    };
+
+    function showStartError(msg) {
+        const el = document.getElementById('start-error');
+        if (msg) { el.textContent = msg; el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'), 3000); }
+        else el.classList.add('hidden');
     }
 
     window.startBigTV = async function() {
-        if (!gameWords.length) await loadWords();
+        if (!gameWords.length) { await loadWords(); }
+        if (!gameWords.length) { showStartError('⚠️ 字庫尚未載入，請先重試載入。'); return; }
         const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(cb=>cb.value);
-        if (!selectedCats.length) { alert("請至少選一個類別！"); return; }
+        if (!selectedCats.length) { showStartError('⚠️ 請至少勾選一個類別！'); return; }
         filteredWords = gameWords.filter(w=>selectedCats.includes(w.category));
-        if (!filteredWords.length) { alert("此類別沒有字詞！"); return; }
+        if (!filteredWords.length) { showStartError('⚠️ 所選類別沒有字詞！'); return; }
         showView('bigtv-play');
         gameScore=0; timeLeft=selectedDuration; shownWordsInRound=[]; gameHistory=[];
         document.getElementById('score').innerText = 0;
