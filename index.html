@@ -1,426 +1,562 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Party Pro: Teams & Seats</title>
+    <title>殺紅了眼</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { --primary: #c084fc; --bg: #faf5ff; --card: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 500px; background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .container.fullscreen { max-width: 100%; padding: 0; border-radius: 0; box-shadow: none; height: 100vh; background: #000; }
-        h1, h2 { text-align: center; color: #9333ea; }
-        .section { margin-bottom: 30px; border-bottom: 1px solid #ede9fe; padding-bottom: 20px; }
-        .btn-group { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 10px 0; }
-        button { padding: 10px 16px; border: none; border-radius: 6px; background: var(--primary); color: white; cursor: pointer; transition: 0.2s; font-weight: 600; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
-        button.secondary { background: #a78bfa; }
-        button.win-btn { background: #22c55e; width: 100%; margin-top: 10px; }
-        input { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 80px; text-align: center; }
-        .display-box { background: #f3e8ff; padding: 15px; border-radius: 8px; margin-top: 10px; font-family: monospace; min-height: 50px; }
-        .dashboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .dashboard-table th, .dashboard-table td { border: 1px solid #ede9fe; padding: 8px; text-align: left; }
-        .hidden { display: none; }
+        /* ── Design Tokens ── */
+        :root {
+            --bg:        #FFFCF6;
+            --border:    #3E3A39;
+            --coral:     #F2A497;
+            --yellow:    #F6D27A;
+            --sky:       #A8D3E6;
+            --green:     #B9DAA5;
+            --text:      #3E3A39;
+            --radius:    18px;
+            --bw:        3px;
+            --font:      'Huninn', 'Noto Sans TC', sans-serif;
+        }
 
-		/* Word Display Container */
-		#word-display {
-			transition: background-color 0.2s ease;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			text-align: center;
-		}
+        /* ── Reset / Base ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 30px;
+        }
 
-		/* Typography for Big TV */
-		.display-word { font-size: 3.5rem; font-weight: 800; margin: 0; }
-		.display-translation { font-size: 1.5rem; opacity: 0.8; margin-top: 5px; }
-		.display-category { font-size: 0.9rem; text-transform: uppercase; margin-top: 20px; opacity: 0.6; font-weight: bold; }
+        /* ── Reduced Motion ── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
 
-		/* Fullscreen Big TV Mode */
-		.container.fullscreen #game-active {
-			display: flex !important;
-			flex-direction: column;
-			height: 100%;
-			justify-content: space-between;
-			padding: 20px;
-			background: white;
-			color: #333;
-		}
+        /* ── Top Nav ── */
+        #top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg);
+            border-bottom: var(--bw) solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        #top-nav .nav-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 10px 16px;
+            border-right: var(--bw) solid var(--border);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        #top-nav .nav-tabs {
+            display: flex;
+            flex: 1;
+            overflow-x: auto;
+        }
+        #top-nav .nav-tabs button {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 8px;
+            background: transparent;
+            border: none;
+            border-right: var(--bw) solid var(--border);
+            font-family: var(--font);
+            font-size: 1rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+        #top-nav .nav-tabs button:last-child { border-right: none; }
+        #top-nav .nav-tabs button:hover,
+        #top-nav .nav-tabs button.active { background: var(--yellow); }
 
-		.container.fullscreen #word-display {
-			flex: 1;
-			font-size: 2rem;
-			margin: 20px 0;
-			color: #333;
-			background: white;
-		}
+        /* ── Page wrapper ── */
+        .page-wrap {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
 
-		.container.fullscreen .display-word {
-			font-size: 3.5rem;
-			line-height: 1;
-			margin-bottom: 20px;
-			color: #333;
-		}
+        /* ── Card ── */
+        .card {
+            background: var(--bg);
+            border: var(--bw) solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-		.container.fullscreen .display-translation {
-			font-size: 1.5rem;
-			margin: 20px 0;
-			color: #666;
-		}
+        /* ── Section title ── */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-		.container.fullscreen .display-category {
-			font-size: 0.9rem;
-			margin-top: 20px;
-			color: #999;
-		}
+        /* ── Buttons ── */
+        button {
+            font-family: var(--font);
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: var(--bw) solid var(--border);
+            border-radius: 12px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: transform 0.12s, box-shadow 0.12s;
+            background: var(--coral);
+            color: var(--text);
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 3px 3px 0 var(--border); }
+        button:active { transform: translateY(0); box-shadow: none; }
+        button.btn-yellow { background: var(--yellow); }
+        button.btn-sky    { background: var(--sky); }
+        button.btn-green  { background: var(--green); }
+        button.btn-ghost  { background: transparent; }
+        button.btn-wide   { width: 100%; }
+        button.btn-big    { font-size: 1.2rem; padding: 16px 24px; }
+        button.btn-win    { background: var(--green); width: 100%; margin-top: 8px; }
 
-		.container.fullscreen .game-controls {
-			display: flex;
-			gap: 20px;
-			padding: 20px 0;
-			justify-content: center;
-		}
+        /* ── Button group ── */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 0;
+        }
+        .btn-group button { flex: 1; min-width: 52px; }
 
-		.container.fullscreen .game-controls button {
-			padding: 20px 40px;
-			font-size: 1.5rem;
-			min-width: 200px;
-		}
+        /* ── Inputs ── */
+        input[type="text"],
+        input[type="number"],
+        input[type="month"] {
+            font-family: var(--font);
+            font-size: 0.95rem;
+            border: var(--bw) solid var(--border);
+            border-radius: 10px;
+            padding: 8px 12px;
+            background: var(--bg);
+            color: var(--text);
+            width: 100%;
+        }
+        input::placeholder { color: #999; }
 
-		.container.fullscreen #game-lobby {
-			color: #333;
-			background: white;
-			padding: 20px !important;
-			border-radius: 12px;
-			margin: 10px 0;
-			max-height: 90vh;
-			overflow-y: auto;
-			width: 100%;
-			box-sizing: border-box;
-		}
+        /* ── Display box ── */
+        .display-box {
+            background: var(--yellow);
+            border: var(--bw) solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-top: 12px;
+            min-height: 50px;
+            font-size: 1rem;
+        }
 
-		.container.fullscreen #game-lobby label {
-			color: #333;
-			font-size: 1.1rem !important;
-			margin: 15px 0 10px 0 !important;
-		}
+        /* ── Checkbox label ── */
+        .check-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--coral); }
 
-		.container.fullscreen #category-checklist {
-			background: #fff !important;
-			border-color: #c084fc !important;
-			color: #333;
-			max-height: 300px !important;
-			font-size: 1.1rem !important;
-			padding: 15px !important;
-		}
+        /* ── Bounce animation for view transitions ── */
+        @keyframes bounce-in {
+            0%   { transform: scale(0.88); opacity: 0; }
+            60%  { transform: scale(1.04); opacity: 1; }
+            80%  { transform: scale(0.97); }
+            100% { transform: scale(1); }
+        }
+        .view:not(.hidden) { animation: bounce-in 0.35s ease; }
 
-		.container.fullscreen #category-checklist label {
-			color: #333 !important;
-			font-size: 1.1rem !important;
-			padding: 8px 0 !important;
-		}
+        /* ── Float animation for SVG illustrations ── */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(-1deg); }
+            50%       { transform: translateY(-8px) rotate(1deg); }
+        }
+        .illus-float { animation: float 4s ease-in-out infinite; }
 
-		.container.fullscreen #category-items label {
-			color: #333 !important;
-			font-size: 1rem !important;
-			padding: 5px !important;
-			margin: 0 !important;
-		}
+        /* ── Hidden ── */
+        .hidden { display: none !important; }
 
-		.container.fullscreen .time-opt {
-			padding: 10px 12px !important;
-			font-size: 0.85rem !important;
-			flex: 1;
-			min-width: 50px;
-		}
+        /* ━━━━━━━━━━━━━━━━━━━━━
+           HOME (Welcome Screen)
+        ━━━━━━━━━━━━━━━━━━━━━ */
+        #view-home {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding-top: 24px;
+        }
+        #view-home h1 {
+            font-size: 2rem;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .home-illus {
+            width: 200px;
+            height: 200px;
+        }
+        .home-cta { display: flex; flex-direction: column; gap: 12px; width: 100%; }
 
-		.container.fullscreen #custom-time {
-			font-size: 1rem !important;
-			padding: 10px !important;
-		}
+        /* ━━━━━━━━━━━━━━━━━━━━━
+           BIG TV GAME PLAY
+        ━━━━━━━━━━━━━━━━━━━━━ */
+        #view-bigtv-play .game-card {
+            border: var(--bw) solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .game-header {
+            background: var(--sky);
+            border-bottom: var(--bw) solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        #word-display {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 32px 20px;
+            background: var(--bg);
+            transition: background 0.2s ease;
+        }
+        .display-word        { font-size: 3rem; font-weight: 700; line-height: 1.2; }
+        .display-translation { font-size: 1.3rem; margin-top: 8px; opacity: 0.75; }
+        .display-category    { font-size: 0.8rem; margin-top: 16px; opacity: 0.5; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+        .game-controls {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg);
+            border-top: var(--bw) solid var(--border);
+        }
+        .game-controls button:first-child { flex: 1; background: var(--sky); }
+        .game-controls button:last-child  { flex: 2; background: var(--green); font-size: 1.1rem; }
 
-		.container.fullscreen input[type="number"] {
-			font-size: 1rem !important;
-		}
+        /* Flash */
+        .flash-green { background: var(--green) !important; }
 
-		.container.fullscreen #game-lobby button {
-			padding: 20px 40px;
-			font-size: 1.2rem;
-		}
+        /* game-over */
+        #game-over {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        #game-over .go-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
+        #game-over .go-score { font-size: 2.5rem; font-weight: 700; color: var(--coral); margin-bottom: 24px; }
 
-		.container.fullscreen .section {
-			background: white;
-			padding: 30px;
-			border-radius: 12px;
-			border: none;
-		}
+        /* ── Stats table ── */
+        .stats-table { width: 100%; border-collapse: collapse; }
+        .stats-table th, .stats-table td {
+            padding: 10px;
+            border-bottom: 2px solid var(--border);
+            text-align: left;
+        }
+        .stats-table th { font-weight: 700; background: var(--yellow); }
+        .stats-table tr:last-child td { border-bottom: none; }
+        .stats-block {
+            border: var(--bw) solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+        .stats-block-header {
+            background: var(--coral);
+            padding: 10px 14px;
+            font-weight: 700;
+            font-size: 1rem;
+        }
 
-		.container.fullscreen h2 {
-			color: #9333ea;
-		}
+        /* ── Category checklist box ── */
+        #category-checklist {
+            max-height: 160px;
+            overflow-y: auto;
+            border: var(--bw) solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            background: var(--bg);
+            margin-bottom: 14px;
+        }
 
-		.container.fullscreen .view.hidden {
-			display: none !important;
-		}
+        /* ── Time selector ── */
+        .time-opt { background: var(--sky); min-width: 44px; flex: 1; }
+        .time-opt.active { background: var(--coral); }
 
-		.container.fullscreen #game-active.hidden {
-			display: none !important;
-		}
+        /* ── Divider ── */
+        hr.deco {
+            border: none;
+            border-top: 2px dashed var(--border);
+            margin: 14px 0;
+            opacity: 0.3;
+        }
 
-		.container.fullscreen .game-header {
-			color: #333;
-			font-size: 1.3rem;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 20px;
-			background: white;
-		}
+        /* ── Back link ── */
+        .back-link {
+            background: transparent;
+            border: var(--bw) solid var(--border);
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
 
-		.container.fullscreen .game-header span {
-			font-size: 1.5rem;
-			font-weight: bold;
-			color: #333;
-		}
+        /* ── Results word table ── */
+        .word-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .word-table th { padding: 8px 10px; background: var(--yellow); border-bottom: var(--bw) solid var(--border); text-align: left; position: sticky; top: 0; }
+        .word-table td { padding: 8px 10px; border-bottom: 1px solid rgba(62,58,57,0.15); }
 
-		/* Welcome Screen */
-		#welcome-screen {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			height: 100%;
-			gap: 40px;
-		}
-
-		#welcome-screen h1 {
-			font-size: 3rem;
-			color: #db2777;
-		}
-
-		#welcome-screen .welcome-buttons {
-			display: flex;
-			flex-direction: column;
-			gap: 20px;
-			width: 100%;
-		}
-
-		#welcome-screen button {
-			padding: 20px 30px;
-			font-size: 1.2rem;
-			width: 100%;
-			border-radius: 10px;
-		}
-
-		#welcome-screen .bigtv-btn {
-			background: #a78bfa;
-			font-size: 1.3rem;
-		}
-
-		#welcome-screen .team-btn {
-			background: #c084fc;
-		}
-
-		/* The Success Flash */
-		.flash-green {
-			background-color: #22c55e !important;
-		}
-
-		/* Back button */
-		.back-btn {
-			position: absolute;
-			top: 20px;
-			left: 20px;
-			background: rgba(255,255,255,0.2);
-			color: white;
-			padding: 10px 15px;
-			border-radius: 6px;
-		}
-
-		.container.fullscreen .back-btn {
-			color: white;
-			background: rgba(255,255,255,0.15);
-		}
-
+        /* ── Custom player inputs ── */
+        #nameInputsArea {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        #nameInputsArea label { font-size: 0.75rem; color: #888; display: block; margin-bottom: 3px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="main-container">
-    <!-- Welcome Screen -->
-    <div id="welcome-screen" style="display: none;">
-        <h1>🍶🪓殺紅了眼⚡🍑</h1>
+<!-- ══════════════════════════════
+     TOP STICKY NAV
+══════════════════════════════ -->
+<nav id="top-nav">
+    <div class="nav-logo">🍶⚡</div>
+    <div class="nav-tabs">
+        <button onclick="showView('home')" id="nav-home">首頁</button>
+        <button onclick="showView('setup')" id="nav-setup">🗡️ 隊伍</button>
+        <button onclick="showView('bigtv')" id="nav-bigtv">📺 大電視</button>
+        <button onclick="showStatsPage()" id="nav-stats">📊 統計</button>
+    </div>
+</nav>
+
+<div class="page-wrap">
+
+    <!-- ══ HOME ══ -->
+    <div id="view-home" class="view">
+        <!-- SVG Illustration: two cartoon swords crossing with sparkles -->
+        <svg class="home-illus illus-float" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="兩把劍交叉插圖">
+            <!-- background circle -->
+            <circle cx="100" cy="100" r="95" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+            <!-- left sword blade -->
+            <rect x="42" y="62" width="10" height="90" rx="4" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5" transform="rotate(-35 100 100)"/>
+            <!-- left guard -->
+            <rect x="58" y="118" width="26" height="10" rx="4" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5" transform="rotate(-35 100 100)"/>
+            <!-- left handle -->
+            <rect x="62" y="126" width="8" height="24" rx="4" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5" transform="rotate(-35 100 100)"/>
+            <!-- right sword blade -->
+            <rect x="42" y="62" width="10" height="90" rx="4" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5" transform="rotate(35 100 100) scale(-1,1) translate(-200,0)"/>
+            <!-- right guard -->
+            <rect x="58" y="118" width="26" height="10" rx="4" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5" transform="rotate(35 100 100) scale(-1,1) translate(-200,0)"/>
+            <!-- right handle -->
+            <rect x="62" y="126" width="8" height="24" rx="4" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5" transform="rotate(35 100 100) scale(-1,1) translate(-200,0)"/>
+            <!-- sparkles -->
+            <text x="90" y="72" font-size="18" text-anchor="middle">✨</text>
+            <text x="112" y="88" font-size="14" text-anchor="middle">⭐</text>
+            <text x="82" y="92" font-size="12" text-anchor="middle">💫</text>
+        </svg>
+
+        <h1>殺紅了眼 🍶🪓</h1>
+        <p style="text-align:center;opacity:0.6;font-size:0.95rem;">朋友聚會遊戲小工具</p>
+
+        <div class="home-cta">
+            <button class="btn-big btn-yellow btn-wide" onclick="showView('setup')">🗡️ 組隊 & 座位</button>
+            <button class="btn-big btn-sky btn-wide" onclick="showView('bigtv')">📺 大電視猜字</button>
+            <button class="btn-big btn-wide" onclick="showStatsPage()" style="background:var(--green)">📊 查看統計</button>
+        </div>
     </div>
 
-    <!-- Regular Navigation (hidden in fullscreen mode) -->
-    <div id="nav-bar" class="btn-group" style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; gap: 12px;">
-        <button class="secondary" onclick="showView('setup')" style="flex: 1; padding: 15px 20px; font-size: 1.1em; font-weight: 600;">🗡️ Team</button>
-        <button style="background: #c084fc; color: white; flex: 1; padding: 15px 20px; font-size: 1.1em; font-weight: 600;" onclick="showView('bigtv')">📺 大電視</button>
-        <button class="secondary" onclick="showStatsPage()" style="flex: 1; padding: 15px 20px; font-size: 1.1em; font-weight: 600;">📊 Stats</button>
-    </div>
+    <!-- ══ TEAM & SEAT ══ -->
+    <div id="view-setup" class="view hidden">
 
-    <div id="view-setup" class="view">
-        <div class="section">
-            <h2>🪑 Quick Seat Draw</h2>
+        <!-- Seat Draw -->
+        <div class="card">
+            <!-- SVG: chairs illustration -->
+            <svg width="64" height="48" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg" style="display:block;margin-bottom:8px">
+                <rect x="4" y="16" width="20" height="14" rx="4" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+                <rect x="8" y="30" width="4" height="10" rx="2" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2"/>
+                <rect x="16" y="30" width="4" height="10" rx="2" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2"/>
+                <rect x="4" y="10" width="20" height="8" rx="3" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+                <rect x="40" y="16" width="20" height="14" rx="4" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+                <rect x="44" y="30" width="4" height="10" rx="2" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2"/>
+                <rect x="52" y="30" width="4" height="10" rx="2" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2"/>
+                <rect x="40" y="10" width="20" height="8" rx="3" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+            </svg>
+            <div class="section-title">🪑 快速抽座位</div>
             <div class="btn-group">
-                <button class="secondary" onclick="initSeatDraw(3)">3</button>
-                <button class="secondary" onclick="initSeatDraw(4)">4</button>
-                <button class="secondary" onclick="initSeatDraw(5)">5</button>
-                <button class="secondary" onclick="initSeatDraw(6)">6</button>
-                <button class="secondary" onclick="initSeatDraw(7)">7</button>
-                <button class="secondary" onclick="initSeatDraw(8)">8</button>
+                <button class="btn-yellow" onclick="initSeatDraw(3)">3人</button>
+                <button class="btn-yellow" onclick="initSeatDraw(4)">4人</button>
+                <button class="btn-yellow" onclick="initSeatDraw(5)">5人</button>
+                <button class="btn-yellow" onclick="initSeatDraw(6)">6人</button>
+                <button class="btn-yellow" onclick="initSeatDraw(7)">7人</button>
+                <button class="btn-yellow" onclick="initSeatDraw(8)">8人</button>
             </div>
-
-            <div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
-                <label style="font-weight: bold; font-size: 0.9em;">Custom:</label>
-                <input type="number" id="custom-players" min="2" max="20" placeholder="players" style="flex: 1; padding: 8px;">
-                <button class="secondary" onclick="initSeatDraw(parseInt(document.getElementById('custom-players').value) || 5)" style="padding: 8px 15px; font-size: 0.9em;">Go</button>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:10px;">
+                <input type="number" id="custom-players" min="2" max="20" placeholder="人數" style="width:90px;">
+                <button class="btn-yellow" onclick="initSeatDraw(parseInt(document.getElementById('custom-players').value)||5)" style="flex:1">自訂</button>
             </div>
-
-            <div id="seatActionArea" class="hidden" style="text-align: center; margin-top: 15px;">
-                <button onclick="drawNextSeat()" id="drawBtn">What's my seat?</button>
-                <div class="display-box" id="seatDisplay">Select players above</div>
+            <div id="seatActionArea" class="hidden" style="text-align:center;margin-top:14px;">
+                <button id="drawBtn" onclick="drawNextSeat()" class="btn-wide btn-coral" style="background:var(--coral)">抽我的座位！</button>
+                <div class="display-box" id="seatDisplay">請先選擇人數</div>
             </div>
         </div>
 
-        <div class="section">
-            <h2>⚔️ Team Assignment</h2>
-            <div id="setupForm">
-                <label>
-                    <input type="checkbox" id="useDefault" checked onchange="togglePlayerInputs()"> 組織 Players
-                </label>
-
-                <div id="customPlayerSetup" class="hidden" style="margin-top: 15px; background: #f1f5f9; padding: 15px; border-radius: 8px;">
-                    <label>How many players? </label>
-                    <input type="number" id="playerCount" value="5" min="2" max="20" onchange="generateNameInputs()" style="width: 50px;">
-                    <div id="nameInputsArea" style="margin-top: 10px;"></div>
-                </div>
-
-                <div class="btn-group" style="margin-top: 15px;">
-                    <button onclick="assignTeams()" style="width: 100%;">Assign Teams & Seats</button>
-                </div>
+        <!-- Team Assignment -->
+        <div class="card">
+            <!-- SVG: two teams flags -->
+            <svg width="64" height="48" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg" style="display:block;margin-bottom:8px">
+                <rect x="6" y="4" width="4" height="36" rx="2" fill="#3E3A39"/>
+                <path d="M10 4 L30 10 L10 20 Z" fill="#F2A497" stroke="#3E3A39" stroke-width="2"/>
+                <rect x="54" y="4" width="4" height="36" rx="2" fill="#3E3A39"/>
+                <path d="M54 4 L34 10 L54 20 Z" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2"/>
+            </svg>
+            <div class="section-title">⚔️ 隨機分隊</div>
+            <label class="check-label" style="margin-bottom:10px;">
+                <input type="checkbox" id="useDefault" checked onchange="togglePlayerInputs()">
+                使用預設成員（I San、Ricky、Angela、Lawrence、Suzanne）
+            </label>
+            <div id="customPlayerSetup" class="hidden" style="margin-top:12px;padding:14px;background:var(--yellow);border:var(--bw) solid var(--border);border-radius:14px;">
+                <label style="font-weight:700;font-size:0.9rem;">幾位玩家？</label>
+                <input type="number" id="playerCount" value="5" min="2" max="20" onchange="generateNameInputs()" style="width:70px;margin-left:8px;">
+                <div id="nameInputsArea"></div>
             </div>
-
-            <div id="teamResult" class="display-box hidden"></div>
-            
-            <div id="winButtons" class="hidden" style="margin-top: 10px;">
-                <button class="win-btn" onclick="recordWin(1)">Team 1 Won!</button>
-                <button class="win-btn" onclick="recordWin(2)">Team 2 Won!</button>
+            <button onclick="assignTeams()" class="btn-wide btn-big" style="margin-top:14px;background:var(--coral)">分隊 + 抽位</button>
+            <div id="teamResult" class="display-box hidden" style="margin-top:12px;line-height:1.8;"></div>
+            <div id="winButtons" class="hidden" style="margin-top:10px;">
+                <button class="btn-win" onclick="recordWin(1)">🏆 隊伍一 贏！</button>
+                <button class="btn-win" onclick="recordWin(2)">🏆 隊伍二 贏！</button>
             </div>
         </div>
     </div>
 
+    <!-- ══ BIG TV LOBBY ══ -->
     <div id="view-bigtv" class="view hidden">
-        <div class="section" style="text-align: center;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0; color: #a855f7;">📺 大電視</h2>
-                <button class="secondary" onclick="exitBigTVMode()" style="padding: 8px 12px; font-size: 0.9em;">← Back</button>
+        <div class="card">
+            <!-- SVG: TV illustration -->
+            <svg width="80" height="64" viewBox="0 0 80 64" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 12px;animation:float 4s ease-in-out infinite" aria-label="電視插圖">
+                <rect x="4" y="8" width="72" height="44" rx="8" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3"/>
+                <rect x="12" y="14" width="56" height="32" rx="4" fill="#FFFCF6" stroke="#3E3A39" stroke-width="2"/>
+                <rect x="30" y="52" width="20" height="8" rx="2" fill="#F6D27A" stroke="#3E3A39" stroke-width="2"/>
+                <circle cx="58" cy="30" r="4" fill="#F2A497" stroke="#3E3A39" stroke-width="1.5"/>
+                <circle cx="66" cy="30" r="4" fill="#B9DAA5" stroke="#3E3A39" stroke-width="1.5"/>
+                <!-- screen text lines -->
+                <rect x="18" y="22" width="30" height="4" rx="2" fill="#F6D27A"/>
+                <rect x="18" y="30" width="22" height="3" rx="1.5" fill="#F2A497" opacity="0.7"/>
+                <rect x="18" y="37" width="26" height="3" rx="1.5" fill="#B9DAA5" opacity="0.7"/>
+            </svg>
+            <div class="section-title">📺 大電視猜字</div>
+
+            <label style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:6px;">📁 選擇類別：</label>
+            <div id="category-checklist">
+                <label class="check-label" style="font-weight:700;border-bottom:1px dashed #ccc;padding-bottom:6px;margin-bottom:6px;">
+                    <input type="checkbox" id="check-all" onchange="toggleAllCats(this.checked)" checked>（全選）
+                </label>
+                <div id="category-items"></div>
             </div>
 
-            <div id="game-lobby">
-                <div style="background: #f3e8ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ddd6fe; text-align: left; width: 100%; box-sizing: border-box;">
-
-                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">📁 Select Categories:</label>
-                    <div id="category-checklist" style="max-height: 150px; overflow-y: auto; background: white; border: 1px solid #c084fc; border-radius: 5px; padding: 10px; margin-bottom: 15px;">
-					<label style="display: block; font-weight: bold; cursor: pointer;">
-						<input type="checkbox" id="check-all" onchange="toggleAllCats(this.checked)" checked> (Select All)
-					</label>
-					<hr style="margin: 8px 0; border: 0; border-top: 1px solid #eee;">
-					<div id="category-items">
-						</div>
-					</div>
-
-                    <div>
-                        <label style="display: block; font-weight: bold; margin-bottom: 5px;">⏱️ Play Time:</label>
-                        <div class="btn-group">
-                            <button class="secondary time-opt" onclick="setTime(10)" id="t10">10s</button>
-                            <button class="secondary time-opt" onclick="setTime(90)" id="t90">90s</button>
-                            <button class="secondary time-opt" onclick="setTime(120)" id="t120">120s</button>
-                            <button class="secondary time-opt" onclick="setTime(180)" id="t180">180s</button>
-							<button class="secondary time-opt" onclick="setTime(300)" id="t300">300s</button>
-							<button class="secondary time-opt" onclick="setTime(600)" id="t600">600s</button>
-                        </div>
-                        <div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
-                            <label style="font-weight: bold; font-size: 0.9em;">Custom:</label>
-                            <input type="number" id="custom-time" min="5" max="3600" placeholder="seconds" style="flex: 1; padding: 8px;">
-                            <button onclick="setTime(parseInt(document.getElementById('custom-time').value) || 60)" style="background: #c084fc; padding: 8px 15px; font-size: 0.9em;">Set</button>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="startBigTV()" style="font-size: 1.2em; padding: 15px 30px; background: #a855f7; width: 100%;">START GAME</button>
+            <label style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:6px;">⏱️ 遊戲時間：</label>
+            <div class="btn-group">
+                <button class="time-opt" onclick="setTime(10)"  id="t10">10s</button>
+                <button class="time-opt" onclick="setTime(90)"  id="t90">90s</button>
+                <button class="time-opt" onclick="setTime(120)" id="t120">120s</button>
+                <button class="time-opt" onclick="setTime(180)" id="t180">180s</button>
+                <button class="time-opt" onclick="setTime(300)" id="t300">300s</button>
+                <button class="time-opt" onclick="setTime(600)" id="t600">600s</button>
             </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:10px;">
+                <input type="number" id="custom-time" min="5" max="3600" placeholder="自訂秒數" style="flex:1">
+                <button class="btn-sky" onclick="setTime(parseInt(document.getElementById('custom-time').value)||60)" style="white-space:nowrap">設定</button>
+            </div>
+
+            <hr class="deco">
+            <button onclick="startBigTV()" class="btn-wide btn-big" style="background:var(--coral);margin-top:4px;">▶ 開始遊戲</button>
         </div>
     </div>
 
+    <!-- ══ BIG TV PLAY ══ -->
     <div id="view-bigtv-play" class="view hidden">
         <div id="game-active">
-            <button class="back-btn" onclick="exitBigTV()">← Back to Menu</button>
-
-            <div id="game-playing" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
+            <div id="game-playing">
                 <div class="game-header">
-                    <div>⏱️ <span id="timer">60</span>s</div>
-                    <div>Score: <span id="score">0</span></div>
-                    <button onclick="endGame(true)" style="background: #ef4444; padding: 8px 15px; font-size: 0.9em;">Stop Game</button>
+                    <span>⏱️ <span id="timer">60</span>s</span>
+                    <span>分數：<span id="score">0</span></span>
+                    <button class="back-link" onclick="endGame(true)" style="background:var(--coral);font-size:0.85rem;">停止</button>
                 </div>
-                <div id="word-display">LOADING...</div>
+                <div id="word-display"><div class="display-word">載入中…</div></div>
                 <div class="game-controls">
-                    <button onclick="nextWord(false)" style="background:#64748b; flex:1;">SKIP ⊘</button>
-                    <button onclick="nextWord(true)" style="background:#22c55e; flex:2;">CORRECT ✅</button>
+                    <button onclick="nextWord(false)">跳過 ⊘</button>
+                    <button onclick="nextWord(true)">答對 ✅</button>
                 </div>
             </div>
 
-            <div id="game-over" style="display: none; flex-direction: column; height: 100%; justify-content: center; align-items: center; text-align: center; gap: 20px;">
-                <div style="font-size: 1.5rem; font-weight: bold; color: #a855f7;">🎮 GAME OVER!</div>
-                <div style="font-size: 2rem; font-weight: bold;">Final Score: <span id="final-score">0</span></div>
-                <button onclick="showGameResults()" style="background: #a78bfa; color: white; padding: 15px 30px; font-size: 1rem; border-radius: 8px;">📺 View 大電視 Results</button>
-                <button onclick="exitBigTV()" style="background: #64748b; color: white; padding: 12px 25px; font-size: 0.95rem; border-radius: 8px;">Back to Menu</button>
+            <div id="game-over" class="hidden card" style="margin-top:20px;">
+                <div class="go-title">🎮 遊戲結束！</div>
+                <div class="go-score">最終得分：<span id="final-score">0</span></div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <button class="btn-yellow btn-wide" onclick="showGameResults()">📋 查看詳細結果</button>
+                    <button class="btn-sky btn-wide" onclick="exitBigTV()">← 返回選單</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- ══ STATS ══ -->
     <div id="view-stats" class="view hidden">
-        <div class="section" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">📊 Stats & History</h2>
-                <button class="secondary" onclick="showView('setup')" style="padding: 8px 12px; font-size: 0.9em;">← Back</button>
+        <div class="card">
+            <div class="section-title">📊 統計 & 歷史</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                <button class="btn-yellow" onclick="loadStatsForMonth(null)" style="flex:1">全部</button>
+                <input type="month" id="month-picker" style="flex:1;" onchange="loadStatsForMonth(document.getElementById('month-picker').value)">
             </div>
-
-            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 10px;">📅 Filter by Month:</label>
-                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-                    <button class="secondary" onclick="loadStatsForMonth(null)" id="btn-all" style="flex: 1;">All Time</button>
-                    <input type="month" id="month-picker" style="flex: 1; padding: 8px;" onchange="loadStatsForMonth(document.getElementById('month-picker').value)">
-                </div>
-                <button onclick="resetDateFilter()" class="secondary" style="width: 100%; padding: 8px;">Clear Filter</button>
-            </div>
-
-            <div id="statsContent" style="min-height: 300px;">
-                <p style="text-align: center; color: #64748b;">⌛ Loading stats...</p>
+            <button class="btn-ghost btn-wide" onclick="resetDateFilter()" style="margin-bottom:14px;font-size:0.85rem;">清除篩選</button>
+            <div id="statsContent" style="min-height:200px;">
+                <p style="text-align:center;opacity:0.5;padding:20px;">⌛ 載入中…</p>
             </div>
         </div>
     </div>
 
+    <!-- ══ GAME RESULTS ══ -->
     <div id="view-game-results" class="view hidden">
-        <div class="section" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">📺 大電視 Results</h2>
-                <button class="secondary" onclick="showView('setup')" style="padding: 8px 12px; font-size: 0.9em;">← Back</button>
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <div class="section-title" style="margin-bottom:0">📋 遊戲結果</div>
+                <button class="back-link" onclick="showView('setup')">← 回主選單</button>
             </div>
-
-            <div id="game-summary" style="background: #f3e8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
-                Loading results...
-            </div>
-
-            <div id="game-words-list" style="min-height: 300px;">
-                <p style="text-align: center; color: #64748b;">No game results yet</p>
+            <div id="game-summary" class="display-box" style="margin-bottom:14px;">載入中…</div>
+            <div id="game-words-list" style="overflow-x:auto;max-height:60vh;overflow-y:auto;border:var(--bw) solid var(--border);border-radius:14px;">
+                <p style="padding:20px;text-align:center;opacity:0.5;">尚無遊戲紀錄</p>
             </div>
         </div>
     </div>
-</div>
+
+</div><!-- /page-wrap -->
 
 <script>
     // --- 0. FIREBASE CONFIG ---
@@ -433,328 +569,190 @@
         appId: "1:848163286246:web:d7f811ee2664dacfcf9f27",
         measurementId: "G-V7WJLYJT70"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-	
-	// --- NAVIGATION LOGIC ---
+
+    // --- NAVIGATION ---
+    const NAV_IDS = { home:'nav-home', setup:'nav-setup', bigtv:'nav-bigtv', stats:'nav-stats' };
+
     window.showView = function(viewName) {
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('view-' + viewName).classList.remove('hidden');
+        const el = document.getElementById('view-' + viewName);
+        if (el) el.classList.remove('hidden');
+        // highlight active nav tab
+        Object.values(NAV_IDS).forEach(id => document.getElementById(id)?.classList.remove('active'));
+        if (NAV_IDS[viewName]) document.getElementById(NAV_IDS[viewName])?.classList.add('active');
     };
 
-	// --- MODE SELECTION ---
-	window.startBigTVMode = function() {
-		document.getElementById('welcome-screen').style.display = 'none';
-		document.getElementById('nav-bar').style.display = 'none';
-		document.getElementById('main-container').classList.add('fullscreen');
-		document.body.style.padding = '0';
-		document.body.style.background = '#000';
-		showView('bigtv');
-		// Check if words are loaded, if not load them
-		if (gameWords.length === 0) {
-			loadWords().then(() => {
-				document.getElementById('game-lobby').style.display = 'flex';
-				document.getElementById('game-lobby').style.flexDirection = 'column';
-				document.getElementById('game-lobby').style.justifyContent = 'center';
-				document.getElementById('game-lobby').style.alignItems = 'center';
-				document.getElementById('game-lobby').style.height = '100%';
-			});
-		} else {
-			document.getElementById('game-lobby').style.display = 'flex';
-			document.getElementById('game-lobby').style.flexDirection = 'column';
-			document.getElementById('game-lobby').style.justifyContent = 'center';
-			document.getElementById('game-lobby').style.alignItems = 'center';
-			document.getElementById('game-lobby').style.height = '100%';
-		}
-	};
+    // --- MODE HELPERS ---
+    window.exitBigTVMode = function() {
+        clearInterval(gameInterval);
+        showView('home');
+        document.getElementById('game-playing').style.display = 'flex';
+        document.getElementById('game-over').classList.add('hidden');
+    };
 
-	window.startTeamMode = function() {
-		document.getElementById('welcome-screen').style.display = 'none';
-		document.getElementById('nav-bar').style.display = 'flex';
-		document.getElementById('main-container').classList.remove('fullscreen');
-		document.body.style.padding = '20px';
-		document.body.style.background = 'var(--bg)';
-		showView('setup');
-	};
+    window.exitBigTV = function() {
+        clearInterval(gameInterval);
+        document.getElementById('game-playing').style.display = 'flex';
+        document.getElementById('game-over').classList.add('hidden');
+        showView('bigtv');
+    };
 
-	window.exitBigTVMode = function() {
-		clearInterval(gameInterval);
-		document.getElementById('main-container').classList.remove('fullscreen');
-		document.body.style.padding = '20px';
-		document.body.style.background = 'var(--bg)';
-		document.getElementById('welcome-screen').style.display = 'flex';
-		document.getElementById('nav-bar').style.display = 'flex';
-		document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-		// Reset game screens
-		document.getElementById('game-playing').style.display = 'flex';
-		document.getElementById('game-over').style.display = 'none';
-	};
+    // --- STATS ---
+    let allStatsData = [];
 
-	window.exitBigTV = function() {
-		clearInterval(gameInterval);
-		// Reset game screens
-		document.getElementById('game-playing').style.display = 'flex';
-		document.getElementById('game-over').style.display = 'none';
-		// Go back to category selection
-		showView('bigtv');
-	};
+    window.showStatsPage = function() {
+        showView('stats');
+        document.getElementById('nav-stats')?.classList.add('active');
+        setTimeout(() => loadAllStats(), 100);
+    };
 
-	// --- STATS PAGE FUNCTIONS ---
-	let allStatsData = [];
+    window.loadAllStats = async function() {
+        const contentArea = document.getElementById('statsContent');
+        contentArea.innerHTML = "<p style='text-align:center;padding:20px;'>⌛ 載入中…</p>";
+        try {
+            const timeoutP = new Promise((_,rej) => setTimeout(()=>rej(new Error("逾時")), 10000));
+            const snap = await Promise.race([db.collection("daily_stats").get(), timeoutP]);
+            allStatsData = [];
+            snap.forEach(doc => allStatsData.push({ id: doc.id, data: doc.data() }));
+            allStatsData.sort((a,b) => b.id.localeCompare(a.id));
+            displayStats(allStatsData, false);
+            document.getElementById('month-picker').value = '';
+        } catch(e) {
+            contentArea.innerHTML = `<p style='text-align:center;color:#c00;padding:20px;'>錯誤：${e.message}</p>`;
+        }
+    };
 
-	window.showStatsPage = function() {
-		showView('stats');
-		// Add small delay to ensure DOM is ready
-		setTimeout(() => {
-			loadAllStats();
-		}, 100);
-	};
+    window.loadStatsForMonth = function(monthStr) {
+        if (!monthStr) { loadAllStats(); return; }
+        const filtered = allStatsData.filter(item => item.id.startsWith(monthStr));
+        if (!filtered.length) {
+            document.getElementById('statsContent').innerHTML = `<p style='text-align:center;padding:20px;'>${monthStr} 尚無紀錄</p>`;
+        } else {
+            displayStats(filtered, true);
+        }
+    };
 
-	window.loadAllStats = async function() {
-		try {
-			const contentArea = document.getElementById('statsContent');
-			if (!contentArea) {
-				console.error("statsContent element not found");
-				return;
-			}
+    window.resetDateFilter = function() {
+        document.getElementById('month-picker').value = '';
+        loadAllStats();
+    };
 
-			contentArea.innerHTML = "⌛ Loading stats...";
+    function displayStats(statsArray, showDaily=false) {
+        if (!statsArray.length) {
+            document.getElementById('statsContent').innerHTML = "<p style='text-align:center;padding:20px;'>尚無對局紀錄。</p>";
+            return;
+        }
+        const overall = {};
+        statsArray.forEach(item => {
+            for (const pName in item.data) {
+                const s = item.data[pName];
+                const k = pName.toLowerCase();
+                if (!overall[k]) overall[k] = { displayName: pName, wins:0, total:0 };
+                overall[k].wins  += s.wins  || 0;
+                overall[k].total += s.total || 0;
+            }
+        });
 
-			// Add timeout to prevent infinite loading
-			const timeoutPromise = new Promise((_, reject) =>
-				setTimeout(() => reject(new Error("Loading timeout")), 10000)
-			);
+        const maxRate = Math.max(...Object.values(overall).map(p => p.total > 0 ? p.wins/p.total : 0));
+        const sortedPlayers = Object.values(overall).sort((a,b) => b.total - a.total);
 
-			const queryPromise = db.collection("daily_stats").get();
-			const snapshot = await Promise.race([queryPromise, timeoutPromise]);
+        let rows = sortedPlayers.map(p => {
+            const r = p.total > 0 ? p.wins/p.total : 0;
+            const pct = Math.round(r*100);
+            const crown = (r === maxRate && p.wins > 0) ? ' 👑' : '';
+            const color = pct >= 60 ? '#4a9e4f' : (pct <= 40 && p.total > 0 ? '#c05050' : '#666');
+            return `<tr><td><strong>${p.displayName.toUpperCase()}${crown}</strong></td><td style="color:${color};font-weight:700">${pct}%</td><td>${p.wins}勝 - ${p.total-p.wins}敗</td></tr>`;
+        }).join('');
 
-			allStatsData = [];
-			snapshot.forEach(doc => {
-				allStatsData.push({ id: doc.id, data: doc.data() });
-			});
+        let html = `<div class="stats-block">
+            <div class="stats-block-header">🏆 總體統計</div>
+            <table class="stats-table"><thead><tr><th>玩家</th><th>勝率</th><th>勝/敗</th></tr></thead><tbody>${rows}</tbody></table>
+        </div>`;
 
-			allStatsData.sort((a, b) => b.id.localeCompare(a.id));
-			displayStats(allStatsData, false); // false = show only overall stats
-			document.getElementById('month-picker').value = '';
-		} catch (e) {
-			console.error("Load stats error:", e);
-			document.getElementById('statsContent').innerHTML = "<p style='text-align: center; color: #ef4444;'><strong>Error loading stats:</strong><br>" + e.message + "<br><br>Check browser console for details.</p>";
-		}
-	};
-
-	window.loadStatsForMonth = async function(monthStr) {
-		if (!monthStr) {
-			loadAllStats();
-			return;
-		}
-		// Filter stats by month (format: YYYY-MM)
-		const filtered = allStatsData.filter(item => item.id.startsWith(monthStr));
-		if (filtered.length === 0) {
-			document.getElementById('statsContent').innerHTML = `<p style="text-align: center; color: #64748b;">No stats found for ${monthStr}</p>`;
-		} else {
-			displayStats(filtered, true); // Show daily breakdown when filtering by month
-		}
-	};
-
-	window.resetDateFilter = function() {
-		document.getElementById('month-picker').value = '';
-		loadAllStats();
-	};
-
-	function displayStats(statsArray, showDaily = false) {
-		if (statsArray.length === 0) {
-			document.getElementById('statsContent').innerHTML = "<p style='text-align:center; color: #64748b;'>No games recorded yet.</p>";
-			return;
-		}
-
-		// Calculate overall stats across all dates
-		const overallStats = {};
-		statsArray.forEach(item => {
-			const playersMap = item.data;
-			for (const playerName in playersMap) {
-				const stats = playersMap[playerName];
-				const pName = playerName.toLowerCase();
-				if (!overallStats[pName]) {
-					overallStats[pName] = { displayName: playerName, wins: 0, total: 0 };
-				}
-				overallStats[pName].wins += stats.wins || 0;
-				overallStats[pName].total += stats.total || 0;
-			}
-		});
-
-		let fullHtml = "";
-
-		// Overall stats section
-		let overallMaxRate = -1;
-		for (const name in overallStats) {
-			const stats = overallStats[name];
-			const rate = stats.total > 0 ? (stats.wins / stats.total) : 0;
-			if (rate > overallMaxRate) overallMaxRate = rate;
-		}
-
-		let overallTableRows = "";
-		const overallPlayers = Object.values(overallStats).sort((a, b) => b.total - a.total);
-		overallPlayers.forEach(player => {
-			const w = player.wins || 0;
-			const t = player.total || 0;
-			const currentRate = t > 0 ? (w / t) : 0;
-			const displayRate = Math.round(currentRate * 100);
-			const isOverallMVP = (currentRate === overallMaxRate && w > 0);
-			const crown = isOverallMVP ? " 👑" : "";
-			let color = displayRate >= 60 ? "#22c55e" : (displayRate <= 40 && t > 0 ? "#ef4444" : "#64748b");
-			overallTableRows += `<tr style="${isOverallMVP ? 'background: rgba(255, 215, 0, 0.1);' : ''}">
-				<td style="padding:12px; border-bottom:1px solid #eee;"><strong>${player.displayName.toUpperCase()}${crown}</strong></td>
-				<td style="padding:12px; border-bottom:1px solid #eee; color:${color}; font-weight:800;">${displayRate}%</td>
-				<td style="padding:12px; border-bottom:1px solid #eee;">${w}W - ${t-w}L <small>(${t})</small></td>
-			</tr>`;
-		});
-
-		fullHtml += `<div style="margin-bottom:30px; border:2px solid #c084fc; border-radius:12px; background:linear-gradient(135deg, #c084fc 0%, #d8b4fe 100%); overflow:hidden;">
-			<div style="background:rgba(0,0,0,0.1); color:white; padding:15px; font-weight:bold; font-size:1.2em;">🏆 Overall Stats</div>
-			<div style="background:white;">
-				<table style="width:100%; border-collapse:collapse; text-align:left;">
-					<thead style="background:#f3e8ff;"><tr><th style="padding:10px;">Player</th><th style="padding:10px;">Rate</th><th style="padding:10px;">W/L</th></tr></thead>
-					<tbody>${overallTableRows}</tbody>
-				</table>
-			</div>
-		</div>`;
-
-		// Daily stats section (only if showDaily is true)
-		if (showDaily) {
-			const sortedArray = [...statsArray].sort((a, b) => b.id.localeCompare(a.id));
-			sortedArray.forEach(item => {
-				const dateKey = item.id;
-				const playersMap = item.data;
-				let maxRate = -1;
-
-				for (const name in playersMap) {
-					const stats = playersMap[name];
-					const rate = stats.total > 0 ? (stats.wins / stats.total) : 0;
-					if (rate > maxRate) maxRate = rate;
-				}
-
-				let tableRows = "";
-				for (const playerName in playersMap) {
-					const stats = playersMap[playerName];
-					const w = stats.wins || 0;
-					const t = stats.total || 0;
-					const currentRate = t > 0 ? (w / t) : 0;
-					const displayRate = Math.round(currentRate * 100);
-					const isMVP = (currentRate === maxRate && w > 0);
-					const crown = isMVP ? " 👑" : "";
-					let color = displayRate >= 60 ? "#22c55e" : (displayRate <= 40 && t > 0 ? "#ef4444" : "#64748b");
-					tableRows += `<tr style="${isMVP ? 'background: rgba(255, 215, 0, 0.05);' : ''}">
-						<td style="padding:12px; border-bottom:1px solid #eee;"><strong>${playerName.toUpperCase()}${crown}</strong></td>
-						<td style="padding:12px; border-bottom:1px solid #eee; color:${color}; font-weight:800;">${displayRate}%</td>
-						<td style="padding:12px; border-bottom:1px solid #eee;">${w}W - ${t-w}L <small>(${t})</small></td>
-					</tr>`;
-				}
-
-				fullHtml += `<div style="margin-bottom:20px; border:1px solid #ede9fe; border-radius:12px; background:white; overflow:hidden;">
-					<div style="background:#a855f7; color:white; padding:12px 15px; font-weight:bold; font-size:1.1em;">📅 ${dateKey}</div>
-					<table style="width:100%; border-collapse:collapse; text-align:left;">
-						<thead style="background:#f3e8ff;"><tr><th style="padding:10px;">Player</th><th style="padding:10px;">Rate</th><th style="padding:10px;">W/L</th></tr></thead>
-						<tbody>${tableRows}</tbody>
-					</table>
-				</div>`;
-			});
-		}
-
-		document.getElementById('statsContent').innerHTML = fullHtml;
-	}
-
-	// Show welcome screen on load
-	window.addEventListener('load', () => {
-		document.getElementById('welcome-screen').style.display = 'flex';
-	});
+        if (showDaily) {
+            [...statsArray].sort((a,b)=>b.id.localeCompare(a.id)).forEach(item => {
+                const maxR = Math.max(...Object.values(item.data).map(s => s.total>0?s.wins/s.total:0));
+                let drows = '';
+                for (const pName in item.data) {
+                    const s = item.data[pName];
+                    const r = s.total>0?s.wins/s.total:0;
+                    const pct = Math.round(r*100);
+                    const crown = (r===maxR && s.wins>0)?' 👑':'';
+                    const color = pct>=60?'#4a9e4f':(pct<=40&&s.total>0?'#c05050':'#666');
+                    drows += `<tr><td><strong>${pName.toUpperCase()}${crown}</strong></td><td style="color:${color};font-weight:700">${pct}%</td><td>${s.wins}勝 - ${(s.total||0)-(s.wins||0)}敗</td></tr>`;
+                }
+                html += `<div class="stats-block">
+                    <div class="stats-block-header" style="background:var(--sky)">📅 ${item.id}</div>
+                    <table class="stats-table"><thead><tr><th>玩家</th><th>勝率</th><th>勝/敗</th></tr></thead><tbody>${drows}</tbody></table>
+                </div>`;
+            });
+        }
+        document.getElementById('statsContent').innerHTML = html;
+    }
 
     // --- 1. GLOBAL STATE ---
     let availableSeats = [];
     let totalSeatsSet = 0;
     let confirmedCount = 0;
-    const defaultPlayers = ["I San🍭", "Ricky🐹", "Angela", "Lawrence", "Suzanne"];
-    let currentTeams = { team1: [], team2: [] };
+    const defaultPlayers = ["I San🍭","Ricky🐹","Angela","Lawrence","Suzanne"];
+    let currentTeams = { team1:[], team2:[] };
 
-    // --- 2. SEAT DRAW LOGIC ---
+    // --- 2. SEAT DRAW ---
     window.initSeatDraw = function(num) {
-        if(!num || num < 1) return;
+        if (!num || num < 1) return;
         totalSeatsSet = parseInt(num);
         confirmedCount = 0;
-        availableSeats = Array.from({length: totalSeatsSet}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
-        
+        availableSeats = Array.from({length:totalSeatsSet},(_,i)=>i+1).sort(()=>Math.random()-0.5);
         document.getElementById('seatActionArea').classList.remove('hidden');
-        document.getElementById('seatDisplay').innerText = `Ready to draw for ${num} players.`;
+        document.getElementById('seatDisplay').innerText = `準備好為 ${num} 人抽座位了！`;
         document.getElementById('drawBtn').disabled = false;
     };
 
     window.drawNextSeat = function() {
-        if(availableSeats.length > 0) {
+        if (availableSeats.length > 0) {
             const seat = availableSeats.pop();
             confirmedCount++;
-            document.getElementById('seatDisplay').innerHTML = `<strong>Your Seat: (${seat})</strong> <br> Confirmed: (${confirmedCount}/${totalSeatsSet})`;
-            if(availableSeats.length === 0) {
-                document.getElementById('drawBtn').disabled = true;
-            }
+            document.getElementById('seatDisplay').innerHTML = `<strong>你的座位：第 ${seat} 號</strong><br>已確認：${confirmedCount}/${totalSeatsSet}`;
+            if (!availableSeats.length) document.getElementById('drawBtn').disabled = true;
         }
     };
 
-    // --- 3. TEAM ASSIGNMENT LOGIC ---
+    // --- 3. TEAM ASSIGNMENT ---
     window.togglePlayerInputs = function() {
         const isDefault = document.getElementById('useDefault').checked;
-        const customArea = document.getElementById('customPlayerSetup');
-        if (customArea) {
-            customArea.classList.toggle('hidden', isDefault);
-            if (!isDefault) generateNameInputs();
-        }
+        document.getElementById('customPlayerSetup').classList.toggle('hidden', isDefault);
+        if (!isDefault) generateNameInputs();
     };
 
     window.generateNameInputs = function() {
         const count = parseInt(document.getElementById('playerCount').value) || 5;
         const area = document.getElementById('nameInputsArea');
-        area.innerHTML = "";
-        const defaultNames = ["I San", "Ricky", "Angela", "Lawrence", "Suzanne"];
-        
-        area.style.display = "grid";
-        area.style.gridTemplateColumns = "repeat(auto-fit, minmax(140px, 1fr))";
-        area.style.gap = "10px";
-        area.style.width = "100%";
-        area.style.boxSizing = "border-box";
-
-        for (let i = 1; i <= count; i++) {
-            const defaultValue = defaultNames[i - 1] || "";
-            area.innerHTML += `
-                <div style="display: flex; flex-direction: column;">
-                    <label style="font-size: 0.75rem; color: #64748b; margin-bottom: 4px;">Player ${i}</label>
-                    <input type="text" class="player-name-input" value="${defaultValue}" placeholder="Name..." 
-                           style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; width: 100%; box-sizing: border-box;">
-                </div>`;
+        area.innerHTML = '';
+        const defaults = ["I San","Ricky","Angela","Lawrence","Suzanne"];
+        for (let i=1; i<=count; i++) {
+            area.innerHTML += `<div><label>玩家 ${i}</label><input type="text" class="player-name-input" value="${defaults[i-1]||''}" placeholder="名字…"></div>`;
         }
     };
 
     window.assignTeams = function() {
         let players = [];
-        const isDefault = document.getElementById('useDefault').checked;
-        if (isDefault) {
+        if (document.getElementById('useDefault').checked) {
             players = [...defaultPlayers];
         } else {
-            const inputs = document.querySelectorAll('.player-name-input');
-            inputs.forEach(input => {
-                if (input.value.trim() !== "") players.push(input.value.trim());
+            document.querySelectorAll('.player-name-input').forEach(inp => {
+                if (inp.value.trim()) players.push(inp.value.trim());
             });
-            if (players.length < 2) {
-                alert("Please enter at least 2 player names!");
-                return;
-            }
+            if (players.length < 2) { alert("請至少輸入 2 位玩家！"); return; }
         }
-        players.sort(() => Math.random() - 0.5);
-        const seats = Array.from({length: players.length}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
-        const mid = Math.ceil(players.length / 2);
-        currentTeams.team1 = players.slice(0, mid).map(p => ({name: p, seat: seats.pop()}));
-        currentTeams.team2 = players.slice(mid).map(p => ({name: p, seat: seats.pop()}));
-
-        let html = "<strong>Team 1:</strong> " + currentTeams.team1.map(p => `${p.name}(${p.seat})`).join(", ") + "<br>";
-        html += "<strong>Team 2:</strong> " + currentTeams.team2.map(p => `${p.name}(${p.seat})`).join(", ");
+        players.sort(()=>Math.random()-0.5);
+        const seats = Array.from({length:players.length},(_,i)=>i+1).sort(()=>Math.random()-0.5);
+        const mid = Math.ceil(players.length/2);
+        currentTeams.team1 = players.slice(0,mid).map(p=>({name:p,seat:seats.pop()}));
+        currentTeams.team2 = players.slice(mid).map(p=>({name:p,seat:seats.pop()}));
+        let html = `<strong>隊伍一：</strong>${currentTeams.team1.map(p=>`${p.name}(${p.seat})`).join('、')}<br>`;
+        html += `<strong>隊伍二：</strong>${currentTeams.team2.map(p=>`${p.name}(${p.seat})`).join('、')}`;
         document.getElementById('teamResult').innerHTML = html;
         document.getElementById('teamResult').classList.remove('hidden');
         document.getElementById('winButtons').classList.remove('hidden');
@@ -763,284 +761,168 @@
     // --- 4. WIN RECORDING ---
     function getTodayString() {
         const d = new Date();
-        return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+        return `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
     }
 
-    window.recordWin = async function(winningTeamNum) {
+    window.recordWin = async function(winTeam) {
         try {
             const dateKey = getTodayString();
-            const winners = winningTeamNum === 1 ? currentTeams.team1 : currentTeams.team2;
-            const allPlayers = [...currentTeams.team1, ...currentTeams.team2];
-            const dayRef = db.collection("daily_stats").doc(dateKey);
-            const doc = await dayRef.get();
-            let dayData = doc.exists ? doc.data() : {};
-
-            allPlayers.forEach(p => {
-                const pName = p.name.toLowerCase();
-                const isWinner = winners.some(w => w.name === p.name);
-                if (!dayData[pName]) dayData[pName] = { wins: 0, total: 0 };
-                dayData[pName].total += 1;
-                if (isWinner) dayData[pName].wins += 1;
+            const winners = winTeam===1 ? currentTeams.team1 : currentTeams.team2;
+            const all = [...currentTeams.team1, ...currentTeams.team2];
+            const ref = db.collection("daily_stats").doc(dateKey);
+            const doc = await ref.get();
+            let data = doc.exists ? doc.data() : {};
+            all.forEach(p => {
+                const k = p.name.toLowerCase();
+                if (!data[k]) data[k] = { wins:0, total:0 };
+                data[k].total += 1;
+                if (winners.some(w=>w.name===p.name)) data[k].wins += 1;
             });
-
-            await dayRef.set(dayData);
-            alert(`Match recorded for ${dateKey}!`);
-        } catch (e) {
-            console.error("Save error:", e);
-        }
+            await ref.set(data);
+            alert(`${dateKey} 的對局已記錄！`);
+        } catch(e) { console.error("Save error:", e); }
     };
 
-    // --- OLD DASHBOARD (Deprecated - Use Stats Page Instead) ---
-    window.toggleDashboard = function() {
-        console.log("Use showStatsPage() instead");
-        showStatsPage();
-    };
-
-    // --- GAME RESULTS PAGE ---
+    // --- GAME RESULTS ---
     window.showGameResults = function() {
-        if (!lastGameResults) {
-            alert("No game results yet. Play a game first!");
-            return;
-        }
+        if (!lastGameResults) { alert("還沒有遊戲結果！先玩一局吧。"); return; }
         showView('game-results');
         displayGameResults();
     };
 
     window.displayGameResults = function() {
-        console.log("displayGameResults called, lastGameResults:", lastGameResults);
-
         if (!lastGameResults) {
-            document.getElementById('game-summary').innerHTML = "No game results yet";
-            document.getElementById('game-words-list').innerHTML = "<p style='text-align: center; color: #64748b;'>No game results yet</p>";
+            document.getElementById('game-summary').innerHTML = "尚無結果";
+            document.getElementById('game-words-list').innerHTML = "<p style='padding:20px;text-align:center'>尚無遊戲紀錄</p>";
             return;
         }
-
         try {
             const { score, duration, totalWords, correctCount, skippedCount, words } = lastGameResults;
-
-            // Display summary
-            document.getElementById('game-summary').innerHTML = `
-                Score: <strong>${score}</strong> |
-                Correct: <strong style="color: #22c55e;">${correctCount}/${totalWords}</strong> |
-                Skipped: <strong style="color: #f59e0b;">${skippedCount}</strong> |
-                Time: <strong>${duration}s</strong>
-            `;
-
-            // Display words table
-            let tableHtml = `<table style="width: 100%; border-collapse: collapse;">
-                <thead style="background: #f3e8ff; position: sticky; top: 0;">
-                    <tr>
-                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">#</th>
-                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Word</th>
-                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Translation</th>
-                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Result</th>
-                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd6fe;">Category</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-
-            if (words && words.length > 0) {
+            document.getElementById('game-summary').innerHTML = `得分：<strong>${score}</strong> ｜ 答對：<strong style="color:#4a9e4f">${correctCount}/${totalWords}</strong> ｜ 跳過：<strong>${skippedCount}</strong> ｜ 時間：<strong>${duration}s</strong>`;
+            let t = `<table class="word-table"><thead><tr><th>#</th><th>字</th><th>翻譯</th><th>結果</th><th>類別</th></tr></thead><tbody>`;
+            if (words?.length) {
                 words.forEach(w => {
-                    const resultEmoji = w.result === 'correct' ? '✅ Correct' : '⊘ Skipped';
-                    const resultColor = w.result === 'correct' ? '#22c55e' : '#f59e0b';
-
-                    tableHtml += `<tr style="border-bottom: 1px solid #ede9fe;">
-                        <td style="padding: 10px;"><strong>${w.order}</strong></td>
-                        <td style="padding: 10px; font-weight: bold;">${w.word}</td>
-                        <td style="padding: 10px;">${w.translation}</td>
-                        <td style="padding: 10px; color: ${resultColor}; font-weight: bold;">${resultEmoji}</td>
-                        <td style="padding: 10px; font-size: 0.9em; color: #999;">${w.category}</td>
-                    </tr>`;
+                    const ok = w.result==='correct';
+                    t += `<tr><td>${w.order}</td><td><strong>${w.word}</strong></td><td>${w.translation}</td><td style="color:${ok?'#4a9e4f':'#c05050'};font-weight:700">${ok?'✅ 答對':'⊘ 跳過'}</td><td style="opacity:0.6;font-size:0.85rem">${w.category}</td></tr>`;
                 });
-            } else {
-                tableHtml += `<tr><td colspan="5" style="padding: 20px; text-align: center;">No words played</td></tr>`;
-            }
-
-            tableHtml += `</tbody></table>`;
-            document.getElementById('game-words-list').innerHTML = tableHtml;
-        } catch (e) {
-            console.error("Error in displayGameResults:", e);
-            document.getElementById('game-words-list').innerHTML = "<p style='color: red;'>Error loading results: " + e.message + "</p>";
-        }
+            } else { t += `<tr><td colspan="5" style="padding:20px;text-align:center">無字詞</td></tr>`; }
+            t += `</tbody></table>`;
+            document.getElementById('game-words-list').innerHTML = t;
+        } catch(e) { document.getElementById('game-words-list').innerHTML = `<p style='color:red;padding:20px'>錯誤：${e.message}</p>`; }
     };
 
-	 // --- 6. BIG TV (大電視) ENGINE ---
-	let gameWords = [];
-	let filteredWords = [];
-	let shownWordsInRound = []; // Track shown words to avoid repeats
-	let gameScore = 0;
-	let timeLeft = 60;
-	let gameInterval;
-	let selectedDuration = 60; // Default time
-	let gameHistory = []; // Track played words for results
-	let currentWordItem = null; // Current word being displayed
-	let lastGameResults = null; // Last game results summary
+    // --- 6. BIG TV ENGINE ---
+    let gameWords = [];
+    let filteredWords = [];
+    let shownWordsInRound = [];
+    let gameScore = 0;
+    let timeLeft = 60;
+    let gameInterval;
+    let selectedDuration = 60;
+    let gameHistory = [];
+    let currentWordItem = null;
+    let lastGameResults = null;
 
-	// 1. SET TIME (Called by buttons t60, t90, t120)
-	window.setTime = function(seconds) {
-		selectedDuration = seconds;
-		// UI Feedback: Reset colors and highlight active
-		document.querySelectorAll('.time-opt').forEach(btn => btn.style.background = '#a78bfa');
-		const activeBtn = document.getElementById('t' + seconds);
-		if(activeBtn) activeBtn.style.background = '#d8b4fe';
-		// Clear custom input when preset is selected
-		document.getElementById('custom-time').value = '';
-	};
+    window.setTime = function(seconds) {
+        selectedDuration = seconds;
+        document.querySelectorAll('.time-opt').forEach(btn => btn.classList.remove('active'));
+        const btn = document.getElementById('t' + seconds);
+        if (btn) btn.classList.add('active');
+        document.getElementById('custom-time').value = '';
+    };
 
-	// 2. LOAD WORDS & POPULATE CATEGORIES
-	async function loadWords() {
-		const originalUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzCZ1TCzstZPFtem7rrT6ZHZM4SXZdeI6r5SJTz32issZ5ZCLiNN9l2PE-MSqVErhyNN0EZxeVud3H/pub?gid=1360810286&single=true&output=csv';
-		const csvUrl = 'https://corsproxy.io/?' + encodeURIComponent(originalUrl);
-
-		try {
-			const res = await fetch(csvUrl);
-			const text = await res.text();
-			const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-
-			gameWords = lines.slice(1).map(line => {
-				const p = line.split(',');
-				return { category: p[0]?.trim() || "General", word: p[1]?.trim() || "", translation: p[2]?.trim() || "" };
-			}).filter(item => item.word !== "");
-
-			// Build Checklist UI
-			const container = document.getElementById('category-items');
-			container.innerHTML = "";
-			const categories = [...new Set(gameWords.map(item => item.category))].sort();
-
-			categories.forEach(cat => {
-				const label = document.createElement('label');
-				label.style.display = "block";
-				label.innerHTML = `<input type="checkbox" class="cat-check" value="${cat}" checked> ${cat}`;
-				container.appendChild(label);
-			});
-		} catch (e) {
-			console.error("Load failed", e);
-		}
-	}
-
-	// 3. START GAME (Merged version)
-	window.startBigTV = async function() {
-		if (gameWords.length === 0) await loadWords();
-
-		// Get all checked categories
-		const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(cb => cb.value);
-
-		if (selectedCats.length === 0) return alert("Please select at least one category!");
-
-		// Filter words
-		filteredWords = gameWords.filter(w => selectedCats.includes(w.category));
-
-		if (filteredWords.length === 0) return alert("No words found in these categories!");
-
-		// Switch to game view
-		showView('bigtv-play');
-
-		gameScore = 0;
-		timeLeft = selectedDuration;
-		shownWordsInRound = []; // Reset shown words for new game
-		gameHistory = []; // Reset game history
-		document.getElementById('score').innerText = gameScore;
-		document.getElementById('timer').innerText = timeLeft;
-
-		updateWord();
-
-		if (gameInterval) clearInterval(gameInterval);
-		gameInterval = setInterval(() => {
-			timeLeft--;
-			document.getElementById('timer').innerText = timeLeft;
-			if (timeLeft <= 0) endGame();
-		}, 1000);
-	};
-
-	// 4. UPDATE WORD (Randomly picks from filtered list, no repeats in same round)
-	window.updateWord = function() {
-		// Get available words (not yet shown in this round)
-		const availableWords = filteredWords.filter(w => !shownWordsInRound.includes(w.word));
-
-		if (availableWords.length === 0) {
-			// If all words shown, reset and continue
-			shownWordsInRound = [];
-			return updateWord();
-		}
-
-		const item = availableWords[Math.floor(Math.random() * availableWords.length)];
-		currentWordItem = item; // Store current word for tracking
-		shownWordsInRound.push(item.word); // Mark word as shown
-
-		document.getElementById('word-display').innerHTML = `
-			<div class="display-word">${item.word}</div>
-			<div class="display-translation">${item.translation || ''}</div>
-			<div class="display-category">${item.category || ''}</div>
-		`;
-	};
-
-	// 5. NEXT WORD (Handles score and effects)
-	window.nextWord = function(isCorrect) {
-		// Track word result in game history
-		if (currentWordItem) {
-			gameHistory.push({
-				word: currentWordItem.word,
-				category: currentWordItem.category,
-				translation: currentWordItem.translation,
-				result: isCorrect ? 'correct' : 'skipped',
-				order: gameHistory.length + 1
-			});
-		}
-
-		const display = document.getElementById('word-display');
-		if (isCorrect) {
-			gameScore++;
-			document.getElementById('score').innerText = gameScore;
-			display.classList.add('flash-green');
-			setTimeout(() => display.classList.remove('flash-green'), 300);
-		}
-		updateWord();
-	};
-
-	// 6. END GAME
-	window.endGame = function(manual = false) {
-    clearInterval(gameInterval);
-    if (manual) {
-        if (!confirm("End game early?")) {
-            // Restart timer if they cancel
-            gameInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                if (timeLeft <= 0) endGame();
-            }, 1000);
-            return;
-        }
+    async function loadWords() {
+        const orig = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzCZ1TCzstZPFtem7rrT6ZHZM4SXZdeI6r5SJTz32issZ5ZCLiNN9l2PE-MSqVErhyNN0EZxeVud3H/pub?gid=1360810286&single=true&output=csv';
+        const url = 'https://corsproxy.io/?' + encodeURIComponent(orig);
+        try {
+            const res = await fetch(url);
+            const text = await res.text();
+            const lines = text.split(/\r?\n/).filter(l=>l.trim());
+            gameWords = lines.slice(1).map(l => {
+                const p = l.split(',');
+                return { category: p[0]?.trim()||"General", word: p[1]?.trim()||"", translation: p[2]?.trim()||"" };
+            }).filter(i=>i.word);
+            const container = document.getElementById('category-items');
+            container.innerHTML = '';
+            [...new Set(gameWords.map(i=>i.category))].sort().forEach(cat => {
+                const lbl = document.createElement('label');
+                lbl.className = 'check-label';
+                lbl.innerHTML = `<input type="checkbox" class="cat-check" value="${cat}" checked>${cat}`;
+                container.appendChild(lbl);
+            });
+        } catch(e) { console.error("Load failed", e); }
     }
 
-    // Save game results before clearing
-    lastGameResults = {
-        score: gameScore,
-        duration: selectedDuration - timeLeft,
-        totalWords: gameHistory.length,
-        correctCount: gameHistory.filter(w => w.result === 'correct').length,
-        skippedCount: gameHistory.filter(w => w.result === 'skipped').length,
-        words: [...gameHistory]
+    window.startBigTV = async function() {
+        if (!gameWords.length) await loadWords();
+        const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(cb=>cb.value);
+        if (!selectedCats.length) { alert("請至少選一個類別！"); return; }
+        filteredWords = gameWords.filter(w=>selectedCats.includes(w.category));
+        if (!filteredWords.length) { alert("此類別沒有字詞！"); return; }
+        showView('bigtv-play');
+        gameScore=0; timeLeft=selectedDuration; shownWordsInRound=[]; gameHistory=[];
+        document.getElementById('score').innerText = 0;
+        document.getElementById('timer').innerText = timeLeft;
+        document.getElementById('game-playing').style.display = 'flex';
+        document.getElementById('game-over').classList.add('hidden');
+        updateWord();
+        if (gameInterval) clearInterval(gameInterval);
+        gameInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer').innerText = timeLeft;
+            if (timeLeft <= 0) endGame();
+        }, 1000);
     };
 
-    // Show game-over screen
-    document.getElementById('game-playing').style.display = 'none';
-    document.getElementById('game-over').style.display = 'flex';
-    document.getElementById('final-score').innerText = gameScore;
-};
-	window.toggleAllCats = function(checked) {
-    // Select all checkboxes inside the category-items list
-    const checkboxes = document.querySelectorAll('.cat-check');
-    checkboxes.forEach(cb => {
-        cb.checked = checked;
-    });
-};
+    window.updateWord = function() {
+        const avail = filteredWords.filter(w=>!shownWordsInRound.includes(w.word));
+        if (!avail.length) { shownWordsInRound=[]; return updateWord(); }
+        const item = avail[Math.floor(Math.random()*avail.length)];
+        currentWordItem = item;
+        shownWordsInRound.push(item.word);
+        document.getElementById('word-display').innerHTML = `
+            <div class="display-word">${item.word}</div>
+            <div class="display-translation">${item.translation||''}</div>
+            <div class="display-category">${item.category||''}</div>`;
+    };
 
-	// Initialize on page load - preload words and show welcome screen
-	window.addEventListener('load', () => {
-		loadWords().catch(e => console.error("Initial load failed", e));
-		document.getElementById('welcome-screen').style.display = 'flex';
-	});
- 
+    window.nextWord = function(isCorrect) {
+        if (currentWordItem) {
+            gameHistory.push({ word:currentWordItem.word, category:currentWordItem.category, translation:currentWordItem.translation, result:isCorrect?'correct':'skipped', order:gameHistory.length+1 });
+        }
+        const display = document.getElementById('word-display');
+        if (isCorrect) {
+            gameScore++;
+            document.getElementById('score').innerText = gameScore;
+            display.classList.add('flash-green');
+            setTimeout(()=>display.classList.remove('flash-green'), 300);
+        }
+        updateWord();
+    };
+
+    window.endGame = function(manual=false) {
+        clearInterval(gameInterval);
+        if (manual) {
+            if (!confirm("確定要提前結束遊戲嗎？")) {
+                gameInterval = setInterval(()=>{ timeLeft--; document.getElementById('timer').innerText=timeLeft; if(timeLeft<=0)endGame(); },1000);
+                return;
+            }
+        }
+        lastGameResults = { score:gameScore, duration:selectedDuration-timeLeft, totalWords:gameHistory.length, correctCount:gameHistory.filter(w=>w.result==='correct').length, skippedCount:gameHistory.filter(w=>w.result==='skipped').length, words:[...gameHistory] };
+        document.getElementById('game-playing').style.display = 'none';
+        document.getElementById('game-over').classList.remove('hidden');
+        document.getElementById('final-score').innerText = gameScore;
+    };
+
+    window.toggleAllCats = function(checked) {
+        document.querySelectorAll('.cat-check').forEach(cb=>cb.checked=checked);
+    };
+
+    // --- INIT ---
+    window.addEventListener('load', () => {
+        loadWords().catch(e=>console.error("Initial load failed",e));
+        showView('home');
+    });
 </script>
 </body>
 </html>
