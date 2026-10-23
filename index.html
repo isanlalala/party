@@ -309,8 +309,9 @@
         }
 
         /* ── Time selector ── */
-        .time-opt { background: var(--sky); min-width: 44px; flex: 1; }
+        .time-opt { background: var(--sky); min-width: 40px; flex: 1; font-size: 0.78rem; padding: 7px 2px; text-align: center; }
         .time-opt.active { background: var(--coral); }
+        .ito-popt.active { background: var(--coral) !important; }
 
         /* ── Divider ── */
         hr.deco {
@@ -354,6 +355,7 @@
         <button onclick="showView('home')" id="nav-home">殺紅了眼</button>
         <button onclick="showView('setup')" id="nav-setup">🗡️ 隊伍</button>
         <button onclick="showView('bigtv')" id="nav-bigtv">📺 大電視</button>
+        <button onclick="showView('ito')" id="nav-ito">🔢 ito</button>
         <button onclick="showStatsPage()" id="nav-stats">📊 統計</button>
     </div>
 </nav>
@@ -529,6 +531,67 @@
         </div>
     </div>
 
+    <!-- ══ ITO LOBBY ══ -->
+    <div id="view-ito" class="view hidden">
+        <div class="card">
+            <div class="section-title">🔢 ito</div>
+            <p style="font-size:0.88rem;opacity:0.65;margin-bottom:16px;line-height:1.6;">每人拿到 1〜100 的秘密數字，用主題相關的詞描述自己，一起猜排列順序！</p>
+
+            <label style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:6px;">👥 玩家人數：</label>
+            <div class="btn-group">
+                <button class="ito-popt btn-sky" onclick="setItoPlayers(3)">3</button>
+                <button class="ito-popt btn-sky" onclick="setItoPlayers(4)">4</button>
+                <button class="ito-popt btn-sky" onclick="setItoPlayers(5)">5</button>
+                <button class="ito-popt btn-sky" onclick="setItoPlayers(6)">6</button>
+                <button class="ito-popt btn-sky" onclick="setItoPlayers(7)">7</button>
+                <button class="ito-popt btn-sky" onclick="setItoPlayers(8)">8</button>
+            </div>
+
+            <label style="font-weight:700;font-size:0.9rem;display:block;margin-bottom:6px;margin-top:16px;">🎯 主題：</label>
+            <div id="ito-theme-display" style="background:var(--yellow);border:var(--bw) solid var(--border);border-radius:14px;padding:12px 16px;font-size:1.1rem;font-weight:700;min-height:48px;display:flex;align-items:center;">請選擇或輸入主題</div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+                <button class="btn-yellow" onclick="randomItoTheme()" style="flex:0 0 auto;">🎲 隨機</button>
+                <input type="text" id="ito-custom-theme" placeholder="自訂主題…" oninput="setItoTheme(this.value)" style="flex:1;">
+            </div>
+
+            <hr class="deco">
+            <button onclick="startIto()" class="btn-wide btn-big" style="background:var(--coral);">▶ 開始發號碼</button>
+        </div>
+    </div>
+
+    <!-- ══ ITO PLAY ══ -->
+    <div id="view-ito-play" class="view hidden">
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div class="section-title" style="margin-bottom:0">🔢 ito</div>
+                <button class="back-link" onclick="showView('ito')">← 重來</button>
+            </div>
+
+            <div id="ito-theme-banner" style="background:var(--sky);border:var(--bw) solid var(--border);border-radius:12px;padding:10px 14px;font-weight:700;text-align:center;margin-bottom:16px;font-size:1rem;"></div>
+
+            <div id="ito-deal-area">
+                <p id="ito-player-label" style="text-align:center;font-size:1.1rem;font-weight:700;margin-bottom:12px;"></p>
+                <div id="ito-reveal-btn" onclick="itoReveal()" style="min-height:160px;display:flex;flex-direction:column;justify-content:center;align-items:center;border:var(--bw) solid var(--border);border-radius:var(--radius);background:var(--yellow);cursor:pointer;font-size:1rem;gap:8px;">
+                    <span style="font-size:2.5rem;">👆</span>
+                    <span style="font-weight:700;">點我看號碼</span>
+                </div>
+                <div id="ito-number-area" class="hidden" style="min-height:160px;display:flex;flex-direction:column;justify-content:center;align-items:center;border:var(--bw) solid var(--border);border-radius:var(--radius);background:var(--coral);">
+                    <div id="ito-number-value" style="font-size:5.5rem;font-weight:700;line-height:1;"></div>
+                    <div style="font-size:0.85rem;opacity:0.7;margin-top:8px;">記好了再按下方按鈕</div>
+                </div>
+                <button id="ito-confirm-btn" onclick="itoConfirm()" class="btn-wide btn-big hidden" style="margin-top:14px;background:var(--green);">記好了 ✓ 下一位 →</button>
+            </div>
+
+            <div id="ito-discuss-area" class="hidden" style="text-align:center;padding:20px 0;">
+                <div style="font-size:2.5rem;margin-bottom:12px;">🎉</div>
+                <div style="font-size:1.2rem;font-weight:700;margin-bottom:8px;">號碼都發好了！</div>
+                <div style="font-size:0.9rem;opacity:0.7;margin-bottom:20px;">現在輪流用一個詞描述你的數字，一起猜順序！</div>
+                <div id="ito-theme-reminder" style="background:var(--yellow);border:var(--bw) solid var(--border);border-radius:14px;padding:14px;font-size:1.1rem;font-weight:700;margin-bottom:20px;"></div>
+                <button onclick="showView('ito')" class="btn-wide" style="background:var(--sky);">再玩一局</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ══ GAME RESULTS ══ -->
     <div id="view-game-results" class="view hidden">
         <div class="card">
@@ -560,7 +623,7 @@
     const db = firebase.firestore();
 
     // --- NAVIGATION ---
-    const NAV_IDS = { home:'nav-home', setup:'nav-setup', bigtv:'nav-bigtv', stats:'nav-stats' };
+    const NAV_IDS = { home:'nav-home', setup:'nav-setup', bigtv:'nav-bigtv', ito:'nav-ito', stats:'nav-stats' };
 
     window.showView = function(viewName) {
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
@@ -942,6 +1005,84 @@
     window.toggleAllCats = function(checked) {
         document.querySelectorAll('.cat-check').forEach(cb=>cb.checked=checked);
     };
+
+    // --- ITO GAME ---
+    const ITO_THEMES = [
+        '越大越好的東西','越小越可愛的東西','動物的危險程度','動物的可愛程度',
+        '讓人尷尬的程度','讓人緊張的情況','食物的辣度','食物的甜度',
+        '讓人後悔的事','值得為它起床的理由','朋友會做的蠢事',
+        '約會地點的浪漫程度','讓媽媽生氣的程度','需要勇氣的程度',
+        '讓你睡不著的事','值得排隊的事','旅遊地點的遠近',
+        '讓人驚訝的程度','夏天消暑的方法','運動的激烈程度',
+        '讓人臉紅的程度','讓你喝水的原因','搞笑藝人的好笑程度',
+        '老闆說的話讓人崩潰的程度','零食的NG程度',
+    ];
+    let itoPlayers = 4;
+    let itoTheme = '';
+    let itoNumbers = [];
+    let itoCurrentPlayer = 0;
+
+    window.setItoPlayers = function(n) {
+        itoPlayers = n;
+        document.querySelectorAll('.ito-popt').forEach(b => b.classList.remove('active'));
+        const btns = document.querySelectorAll('.ito-popt');
+        btns.forEach(b => { if (b.textContent.trim() === String(n)) b.classList.add('active'); });
+    };
+
+    window.setItoTheme = function(val) {
+        itoTheme = val.trim();
+        document.getElementById('ito-theme-display').textContent = itoTheme || '請選擇或輸入主題';
+    };
+
+    window.randomItoTheme = function() {
+        const t = ITO_THEMES[Math.floor(Math.random() * ITO_THEMES.length)];
+        itoTheme = t;
+        document.getElementById('ito-theme-display').textContent = t;
+        document.getElementById('ito-custom-theme').value = '';
+    };
+
+    window.startIto = function() {
+        if (!itoTheme) { alert('請先選擇或輸入主題！'); return; }
+        // generate unique random numbers 1-100 for each player
+        const pool = Array.from({length:100},(_,i)=>i+1).sort(()=>Math.random()-0.5);
+        itoNumbers = pool.slice(0, itoPlayers);
+        itoCurrentPlayer = 0;
+        document.getElementById('ito-theme-banner').textContent = '主題：' + itoTheme;
+        document.getElementById('ito-theme-reminder').textContent = '主題：' + itoTheme;
+        document.getElementById('ito-deal-area').classList.remove('hidden');
+        document.getElementById('ito-discuss-area').classList.add('hidden');
+        itoShowPlayer();
+        showView('ito-play');
+    };
+
+    function itoShowPlayer() {
+        document.getElementById('ito-player-label').textContent = `玩家 ${itoCurrentPlayer + 1} / ${itoPlayers}`;
+        document.getElementById('ito-reveal-btn').classList.remove('hidden');
+        document.getElementById('ito-number-area').classList.add('hidden');
+        document.getElementById('ito-confirm-btn').classList.add('hidden');
+    }
+
+    window.itoReveal = function() {
+        document.getElementById('ito-number-value').textContent = itoNumbers[itoCurrentPlayer];
+        document.getElementById('ito-reveal-btn').classList.add('hidden');
+        document.getElementById('ito-number-area').classList.remove('hidden');
+        document.getElementById('ito-confirm-btn').classList.remove('hidden');
+    };
+
+    window.itoConfirm = function() {
+        itoCurrentPlayer++;
+        if (itoCurrentPlayer >= itoPlayers) {
+            document.getElementById('ito-deal-area').classList.add('hidden');
+            document.getElementById('ito-discuss-area').classList.remove('hidden');
+        } else {
+            itoShowPlayer();
+        }
+    };
+
+    // default player count highlight on load
+    document.addEventListener('DOMContentLoaded', () => {
+        setItoPlayers(4);
+    });
 
     // --- INIT ---
     window.addEventListener('load', () => {
